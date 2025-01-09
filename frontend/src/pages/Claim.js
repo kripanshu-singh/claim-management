@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Input, InputNumber, message } from "antd";
+import { Button, Input, InputNumber, message, notification } from "antd";
 import styled from "styled-components";
 import claimApi from "../api/claimApi.js";
 import { useSession } from "../context/session.js";
@@ -15,6 +15,8 @@ const StyledContainer = styled.div`
 `;
 
 const Claim = () => {
+  const [api, contextHolder] = notification.useNotification();
+
   const navigate = useNavigate();
   const { sendToContext } = useSession();
 
@@ -51,11 +53,19 @@ const Claim = () => {
 
     try {
       const response = await claimApi.submitClaim(formData);
-      message.success("Claim submitted successfully!");
+      api.success({
+        message: "Logedin successful",
+        description: response?.message || "You successfully logedin.", // Error message from backend
+      });
       navigate("/");
     } catch (error) {
       console.error("Error submitting claim:", error);
-      message.error(error.response?.data?.message || "Error submitting claim");
+      api.error({
+        message: "Registration Failed",
+        description:
+          error?.response?.data?.message ||
+          "Something went wrong. Please try again.", // Error message from backend
+      });
     } finally {
       setLoading(false);
     }
@@ -63,20 +73,21 @@ const Claim = () => {
 
   return (
     <StyledContainer>
+      {contextHolder}
       <form className="form claim-form" onSubmit={submitClaim}>
         <h2>Submit Claim</h2>
         <Input
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          required
+          // required
         />
         <Input
           placeholder="Email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
+          // required
         />
         <InputNumber
           placeholder="Claim Amount"

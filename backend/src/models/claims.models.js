@@ -51,6 +51,10 @@ const claimSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User", // Reference to the insurer who reviewed the claim
   },
+  ownerId: {
+    type: Schema.Types.ObjectId,
+    ref: "User", // Reference to the patient
+  },
 });
 
 export const Claim = model("Claim", claimSchema);

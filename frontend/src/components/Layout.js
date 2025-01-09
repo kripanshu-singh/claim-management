@@ -5,12 +5,15 @@ import { Outlet } from "react-router-dom";
 //
 
 import { SessionProvider } from "../context/session.js";
+import Navbar from "./Navbar.js";
+import Footer from "./Footer.js";
 const Layout = () => {
   return (
     <SessionProvider>
       {/* <Header /> */}
+      <Navbar />
       <Outlet />
-      {/* <Footer /> */}
+      <Footer />
     </SessionProvider>
   );
 };

@@ -8,7 +8,12 @@ const claimApi = {
 
   // !Register User
   registerUser(payload) {
-    return this.communicator.post(`/users/register`, payload);
+    return this.communicator
+      .post(`/users/register`, payload)
+      .then((response) => response)
+      .catch((error) => {
+        throw error; // Ensure the error is thrown so it can be caught on the frontend
+      });
   },
 
   // !Login User

@@ -14,6 +14,10 @@ export const submitClaim = asyncHandler(async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "Document upload is required." });
   }
+  if (name === "")
+    return res.status(400).json({ message: "Patient name is required." });
+  if (email === "")
+    return res.status(400).json({ message: "Patient email is required." });
 
   // Upload file to Cloudinary
   const documentUpload = await uploadOnCloudinary(req.file.path);
@@ -168,15 +172,14 @@ export const updateClaim = async (req, res) => {
  */
 export const getPatientClaims = async (req, res) => {
   try {
-    // Retrieve user data
+    // Ensure user is authenticated and retrieve user data from the token
     const user = await User.findById(req.user._id);
 
     console.log(`\n ~ getPatientClaims ~ req.user :- `, req.user);
 
-    // Ensure that the email is being retrieved correctly
-    if (!req.user || !req.user.email) {
+    if (!user) {
       return res.status(400).json({
-        message: "User email is missing or invalid.",
+        message: "User not found.",
       });
     }
 
@@ -184,7 +187,7 @@ export const getPatientClaims = async (req, res) => {
     const { status, startDate, endDate, minAmount, maxAmount } = req.query;
 
     // Build the query object dynamically
-    const query = { email: req.user.email }; // Start with filtering by user's email
+    const query = { ownerId: req.user._id }; // Filter claims by user id (ownerId)
 
     if (status) query.status = status; // Filter by claim status
 
@@ -195,6 +198,7 @@ export const getPatientClaims = async (req, res) => {
     if (minAmount || maxAmount) query.claimAmount = {}; // Initialize claimAmount filter
     if (minAmount) query.claimAmount.$gte = Number(minAmount); // Filter by minimum amount
     if (maxAmount) query.claimAmount.$lte = Number(maxAmount); // Filter by maximum amount
+
     console.log(`\n ~ getPatientClaims ~ query :- `, query);
 
     // Fetch claims based on the query

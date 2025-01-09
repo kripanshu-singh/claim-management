@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSession } from "../context/session.js";
 
 const Home = () => {
-  const { userObject } = useSession();
-  console.log(`\n ~ App ~ userObject :- `, userObject);
+  const { userObject, accessToken } = useSession();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Redirect based on the presence of accessToken
+    if (accessToken) {
+      navigate("/dashboard"); // Redirect to the dashboard if accessToken exists
+    } else {
+      navigate("/login"); // Redirect to login if accessToken doesn't exist
+    }
+  }, [accessToken, navigate]);
 
   return (
     <div>

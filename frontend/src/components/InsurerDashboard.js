@@ -5,24 +5,31 @@ import {
   EllipsisOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { message, Avatar, Card } from "antd";
+import { Avatar, Card, message } from "antd";
 import styled from "styled-components";
-import TableListing from "../components/TableListing.js";
+import TableListing from "./TableListing.js";
 import { useSession } from "../context/session.js";
-import claimApi from "../api/claimApi.js";
 import { useNavigate } from "react-router-dom";
+import claimApi from "../api/claimApi.js";
+import Filters from "../components/Filters/index.js";
 
 const { Meta } = Card;
 
 const StyledContainer = styled.div`
   display: flex;
   padding: 20px;
-  //   justify-content: center;
-  //   align-items: center;
-  //   height: 100%;
+  // justify-content: center;
+  // align-items: center;
+  // height: 100%;
 `;
 
-const PatientDashboard = () => {
+const filtersDiv = styled.div`
+  display: flex;
+  margin: 10px;
+  width: 100%;
+`;
+
+const InsurerDashboard = () => {
   const { userObject } = useSession();
   const now = new Date(Date.now());
 
@@ -41,6 +48,8 @@ const PatientDashboard = () => {
   const { sendToContext } = useSession();
   const [loading, setLoading] = useState(false); // Add loading state
   const [claims, setClaims] = useState(null);
+    const [listData, setListData] = useState(null);
+    const [open, setOpen] = useState("");
 
   function formatDate(dateString) {
     const options = {
@@ -55,12 +64,11 @@ const PatientDashboard = () => {
     return formattedDate.replace(",", ""); // Removes any commas if present
   }
 
-  const formatted = formatDate("2025-01-08T08:19:51.863Z");
-  console.log(formatted); // Output: "08 Jan 2025"
-
   const fetchClaims = async () => {
     try {
-      const response = await claimApi.getPatientClaims();
+      const response = await claimApi.getAllClaims();
+      console.log(`\n ~ fetchClaims ~ response :- `, response);
+
       if (response?.claims) {
         // Ensure each claim has a unique key
         const claimsWithKeys = response.claims.map((claim, index) => ({
@@ -69,6 +77,7 @@ const PatientDashboard = () => {
           submissionDate: formatDate(claim.submissionDate),
         }));
         setClaims(claimsWithKeys);
+        setListData(claimsWithKeys);
         message.success("Claims fetched successfully!");
       } else {
         message.error("Failed to fetch claims: Invalid response data.");
@@ -79,48 +88,62 @@ const PatientDashboard = () => {
     }
   };
 
+  console.log(`\n ~ InsurerDashboard ~ claims :- `, claims);
   useEffect(() => {
     fetchClaims();
   }, []);
-
   return (
     <>
-      <StyledContainer className="">
-        <h2>
-          Welcome, {userObject?.name},
-          <br /> {dayName}, {month} {date} {year}
-        </h2>
-        <Card
-          style={{
-            width: 300,
-            //   margin: "auto",
-          }}
-          cover={
-            <img
-              alt="example"
-              src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-            />
-          }
-          actions={[
-            <SettingOutlined key="setting" />,
-            <EditOutlined key="edit" />,
-            <EllipsisOutlined key="ellipsis" />,
-          ]}
-        >
-          <Meta
-            avatar={
-              <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />
-            }
-            title="Card title"
-            description="This is the description"
+      {!claims && <div>Loading...</div>}
+      {claims && (
+        <>
+          <StyledContainer className="">
+            <h2>
+              Welcome, {userObject?.name},
+              <br /> {dayName}, {month} {date} {year}
+            </h2>
+            <Card
+              style={{
+                width: 300,
+                //   margin: "auto",
+              }}
+              cover={
+                <img
+                  alt="example"
+                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                />
+              }
+              actions={[
+                <SettingOutlined key="setting" />,
+                <EditOutlined key="edit" />,
+                <EllipsisOutlined key="ellipsis" />,
+              ]}
+            >
+              <Meta
+                avatar={
+                  <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />
+                }
+                title="Card title"
+                description="This is the description"
+              />
+            </Card>
+            <div
+              className=""
+              style={{ margin: "auto", border: "1px solid black" }}
+            >
+              <ArrowRightOutlined style={{ fontSize: "250px" }} />
+            </div>
+          </StyledContainer>
+          <Filters
+            setClaims={setClaims}
+            open={open}
+            setOpen={setOpen}
+            listData={listData}
           />
-        </Card>
-        <div className="" style={{ margin: "auto", border: "1px solid black" }}>
-          <ArrowRightOutlined style={{ fontSize: "250px" }} />
-        </div>
-      </StyledContainer>
-      <TableListing dataSource={claims} />
+          <TableListing dataSource={[...claims]} />
+        </>
+      )}
     </>
   );
 };
-export default PatientDashboard;
+export default InsurerDashboard;

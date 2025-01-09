@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, notification } from "antd";
 import styled from "styled-components";
 import claimApi from "../api/claimApi.js";
 import { useSession } from "../context/session.js";
@@ -9,7 +9,7 @@ const StyledContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: 80dvh;
 `;
 
 // const StyledButton = styled(Button)`
@@ -20,19 +20,53 @@ const StyledContainer = styled.div`
 // `;
 
 const Login = () => {
+  const [api, contextHolder] = notification.useNotification();
+
   const navigate = useNavigate();
   const { sendToContext } = useSession();
+  // const onFinish = async (values) => {
+  //   const response = await claimApi.loginUser(values);
+  //   sendToContext(response);
+  //   navigate("/");
+  //   console.log("Success:", values);
+  // };
+  // const onFinishFailed = (errorInfo) => {
+  //   console.log("Failed:", errorInfo);
+  // };
+
   const onFinish = async (values) => {
-    const response = await claimApi.loginUser(values);
-    sendToContext(response);
-    navigate("/");
-    console.log("Success:", values);
-  };
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+    try {
+      // Attempt to register the user
+
+      const response = await claimApi.loginUser(values);
+      console.log("Registration response:", response);
+
+      // Store relevant data in context (if needed)
+      sendToContext(response);
+
+      // Redirect to dashboard after successful registration
+      navigate("/dashboard");
+
+      // Handle successful registration
+      api.success({
+        message: "Logedin successful",
+        description: response?.message || "You successfully logedin.", // Error message from backend
+      });
+    } catch (error) {
+      console.log("Error response:", error?.response?.data?.message);
+
+      // If an error occurs (e.g., user already exists)
+      api.error({
+        message: "Registration Failed",
+        description:
+          error?.response?.data?.message ||
+          "Something went wrong. Please try again.", // Error message from backend
+      });
+    }
   };
   return (
     <StyledContainer>
+      {contextHolder}
       <Form
         name="basic"
         labelCol={{
@@ -48,7 +82,7 @@ const Login = () => {
           remember: true,
         }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
+        // onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item

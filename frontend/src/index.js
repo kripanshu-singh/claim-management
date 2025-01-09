@@ -9,10 +9,11 @@ import Home from "./pages/Home.js";
 import Register from "./pages/Register.js";
 import Login from "./pages/Login.js";
 import Claim from "./pages/Claim.js";
-import InsurerDashboard from "./pages/InsurerDashboard.js";
 import Logout from "./pages/Logout.js";
-import PatientDashboard from "./pages/PatientDashboard.js";
 import SingleClaim from "./pages/SingleClaim.js";
+import AboutUs from "./pages/AboutUs.js";
+import Contact from "./pages/Contactus.js";
+import Dashboard from "./pages/Dashboard.js";
 
 const router = createBrowserRouter([
   {
@@ -25,10 +26,14 @@ const router = createBrowserRouter([
         path: "/",
         element: <Home />,
       },
-      // {
-      //   path: "/posts/:id",
-      //   element: <PostDetail />,
-      // },
+      {
+        path: "/about",
+        element: <AboutUs />,
+      },
+      {
+        path: "/contact",
+        element: <Contact />,
+      },
       {
         path: "/register",
         element: <Register />,
@@ -50,12 +55,8 @@ const router = createBrowserRouter([
         element: <Claim />,
       },
       {
-        path: "/insurer_dashboard",
-        element: <InsurerDashboard />,
-      },
-      {
-        path: "/patient_dashboard",
-        element: <PatientDashboard />,
+        path: "/dashboard",
+        element: <Dashboard />,
       },
       // {
       //   path: "/raise_claim",

@@ -1,168 +1,140 @@
-// import React, { use, useState } from "react";
 import styled from "styled-components";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, notification } from "antd";
 import claimApi from "../api/claimApi.js";
-// import { set } from "mongoose";
-// import js_cookie from "js-cookie";
 import { useSession } from "../context/session.js";
 import { Link, useNavigate } from "react-router-dom";
 
-//   {
-//     value: "zhejiang",
-//     label: "Zhejiang",
-//     children: [
-//       {
-//         value: "hangzhou",
-//         label: "Hangzhou",
-//         children: [
-//           {
-//             value: "xihu",
-//             label: "West Lake",
-//           },
-//         ],
-//       },
-//     ],
-//   },
-//   {
-//     value: "jiangsu",
-//     label: "Jiangsu",
-//     children: [
-//       {
-//         value: "nanjing",
-//         label: "Nanjing",
-//         children: [
-//           {
-//             value: "zhonghuamen",
-//             label: "Zhong Hua Men",
-//           },
-//         ],
-//       },
-//     ],
-//   },
-// ];
+// Layout configuration for Ant Design form
 const formItemLayout = {
   labelCol: {
-    xs: {
-      span: 24,
-    },
-    sm: {
-      span: 8,
-    },
+    xs: { span: 24 },
+    sm: { span: 7 },
   },
   wrapperCol: {
-    xs: {
-      span: 24,
-    },
-    sm: {
-      span: 16,
-    },
-  },
-};
-const tailFormItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 16,
-      offset: 8,
-    },
+    xs: { span: 24 },
+    sm: { span: 20 },
   },
 };
 
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: { span: 24, offset: 0 },
+    sm: { span: 16, offset: 8 },
+  },
+};
+
+// Styled container for centering the form
 const StyledContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: 80dvh; // Full height for better vertical centering
+
+  .emailLabel {
+    justify-content: left;
+  }
 `;
 
 const Register = () => {
-  const navigate = useNavigate();
+  const [api, contextHolder] = notification.useNotification();
 
-  const { sendToContext } = useSession();
-
-  const [form] = Form.useForm();
-  console.log(`\n ~ Register ~ form :- `, form);
+  const navigate = useNavigate(); // Hook to handle navigation
+  const { sendToContext } = useSession(); // Get session context function
+  const [form] = Form.useForm(); // Form hook for managing form state
 
   const onFinish = async (values) => {
-    const response = await claimApi.registerUser(values);
-    sendToContext(response);
-    navigate("/");
+    try {
+      // Attempt to register the user
+      const response = await claimApi.registerUser(values);
+      console.log("Registration response:", response);
+
+      // Store relevant data in context (if needed)
+      sendToContext(response);
+
+      // Redirect to dashboard after successful registration
+      navigate("/dashboard");
+
+      // Handle successful registration
+      api.success({
+        message: "Registration successful",
+        description: response?.message || "You successfully registered.", // Error message from backend
+      });
+    } catch (error) {
+      console.log("Error response:", error?.response?.data?.message);
+
+      // If an error occurs (e.g., user already exists)
+      api.error({
+        message: "Registration Failed",
+        description:
+          error?.response?.data?.message ||
+          "Something went wrong. Please try again.", // Error message from backend
+      });
+    }
   };
 
   return (
-    <>
-      <StyledContainer>
-        <Form
-          {...formItemLayout}
-          form={form}
-          name="register"
-          onFinish={onFinish}
-          style={{
-            maxWidth: 600,
-          }}
-          scrollToFirstError
+    <StyledContainer>
+      {contextHolder}
+      <Form
+        {...formItemLayout}
+        form={form}
+        name="register"
+        onFinish={onFinish}
+        style={{ maxWidth: 600 }}
+        scrollToFirstError
+      >
+        {/* Username input */}
+        <Form.Item
+          name="name"
+          label="Username"
+          rules={[
+            {
+              required: true,
+              message: "Please input your nickname!",
+              whitespace: true,
+            },
+          ]}
         >
-          <Form.Item
-            name="name"
-            label="Username"
-            tooltip="What do you want others to call you?"
-            rules={[
-              {
-                required: true,
-                message: "Please input your nickname!",
-                whitespace: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
+          <Input />
+        </Form.Item>
 
-          <Form.Item
-            name="email"
-            label="E-mail"
-            rules={[
-              {
-                type: "email",
-                message: "The input is not valid E-mail!",
-              },
-              {
-                required: true,
-                message: "Please input your E-mail!",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
+        {/* Email input */}
+        <Form.Item
+          className="emailLabel"
+          name="email"
+          label="E-mail"
+          rules={[
+            { type: "email", message: "The input is not a valid E-mail!" },
+            { required: true, message: "Please input your E-mail!" },
+          ]}
+        >
+          <Input />
+        </Form.Item>
 
-          <Form.Item
-            name="password"
-            label="Password"
-            rules={[
-              {
-                required: true,
-                message: "Please input your password!",
-              },
-            ]}
-            hasFeedback
-          >
-            <Input.Password />
-          </Form.Item>
+        {/* Password input */}
+        <Form.Item
+          name="password"
+          label="Password"
+          rules={[{ required: true, message: "Please input your password!" }]}
+          hasFeedback
+        >
+          <Input.Password />
+        </Form.Item>
 
-          <Form.Item {...tailFormItemLayout}>
-            <Button type="primary" htmlType="submit">
-              Register
-            </Button>
-          </Form.Item>
-          <small>
-            Already have an account?
-            <Link to="/login"> Login</Link>
-          </small>
-        </Form>
-      </StyledContainer>
-    </>
+        {/* Submit button */}
+        <Form.Item {...tailFormItemLayout}>
+          <Button type="primary" htmlType="submit">
+            Register
+          </Button>
+        </Form.Item>
+
+        {/* Link to login page */}
+        <small>
+          Already have an account? <Link to="/login">Login</Link>
+        </small>
+      </Form>
+    </StyledContainer>
   );
 };
+
 export default Register;
