@@ -74,7 +74,12 @@ const TableListing = ({ dataSource }) => {
 
   return (
     <>
-      <Table pagination={false} columns={columns} dataSource={dataSource} />
+      <Table
+        rowKey={(data) => data._id}
+        pagination={false}
+        columns={columns}
+        dataSource={[...dataSource]}
+      />
     </>
   );
 };

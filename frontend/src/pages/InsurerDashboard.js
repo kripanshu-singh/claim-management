@@ -11,7 +11,7 @@ import TableListing from "../components/TableListing.js";
 import { useSession } from "../context/session.js";
 import { useNavigate } from "react-router-dom";
 import claimApi from "../api/claimApi.js";
-import PopoverFilter from "../components/PopoverFilter.js";
+import Filters from "../components/Filters/index.js";
 
 const { Meta } = Card;
 
@@ -48,6 +48,8 @@ const InsurerDashboard = () => {
   const { sendToContext } = useSession();
   const [loading, setLoading] = useState(false); // Add loading state
   const [claims, setClaims] = useState(null);
+    const [listData, setListData] = useState(null);
+    const [open, setOpen] = useState("");
 
   function formatDate(dateString) {
     const options = {
@@ -75,6 +77,7 @@ const InsurerDashboard = () => {
           submissionDate: formatDate(claim.submissionDate),
         }));
         setClaims(claimsWithKeys);
+        setListData(claimsWithKeys);
         message.success("Claims fetched successfully!");
       } else {
         message.error("Failed to fetch claims: Invalid response data.");
@@ -131,34 +134,13 @@ const InsurerDashboard = () => {
               <ArrowRightOutlined style={{ fontSize: "250px" }} />
             </div>
           </StyledContainer>
-          <filtersDiv>
-            <PopoverFilter
-              key={1}
-              content={<div closePopover={"Hi"}> WWE </div>}
-              // onOpenChange={(open) => onOpenChange(open, "Uploaded_date")}
-              heading="Uploaded date"
-              rounded
-              // open={openPopover[tabType].Uploaded_date}
-              // count={filters?.rangeRequest ? 1 : 0}
-            />
-            <PopoverFilter
-              key={2}
-              content={
-                <div
-                  closePopover={"closeFilter"}
-                  isModalFilter={"isModalFilter"}
-                >
-                  WWE
-                </div>
-              }
-              // onOpenChange={(open) => onOpenChange(open, "Status")}
-              heading="Status"
-              rounded
-              // open={openPopover[tabType]?.Status}
-              // count={filters?.status?.length}
-            />
-          </filtersDiv>
-          <TableListing dataSource={claims} />
+          <Filters
+            setClaims={setClaims}
+            open={open}
+            setOpen={setOpen}
+            listData={listData}
+          />
+          <TableListing dataSource={[...claims]} />
         </>
       )}
     </>

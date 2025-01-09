@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^13.2.1",
     "antd": "^5.23.0",
     "axios": "^1.7.9",
+    "dayjs": "^1.11.13",
     "js-cookie": "^3.0.5",
     "js_cookie": "^1.0.0",
     "less": "^4.2.1",
