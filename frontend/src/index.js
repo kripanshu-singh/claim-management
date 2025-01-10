@@ -9,7 +9,6 @@ import Home from "./pages/Home.js";
 import Register from "./pages/Register.js";
 import Login from "./pages/Login.js";
 import Claim from "./pages/Claim.js";
-import Logout from "./pages/Logout.js";
 import SingleClaim from "./pages/SingleClaim.js";
 import AboutUs from "./pages/AboutUs.js";
 import Contact from "./pages/Contactus.js";
@@ -82,19 +81,17 @@ const router = createBrowserRouter([
       //   path: "/post/:id/delete",
       //   element: <DeletePost />,
       // },
-      {
-        path: "/logout",
-        element: <Logout />,
-      },
+      // {
+      //   path: "/logout",
+      //   element: <Logout />,
+      // },
     ],
   },
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
     <RouterProvider router={router} />
-  </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

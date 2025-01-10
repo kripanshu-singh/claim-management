@@ -4,10 +4,12 @@ import pic from "../assets/kripanshu.png";
 import { ReactComponent as LogoSvg } from "../assets/square.svg";
 
 const Section = styled.section`
+height: calc( 100dvh - 134px);
+display: flex;
+    justify-content: center;
+    align-items: center;
   overflow: hidden;
-  padding: 60px 0 80px;
   background-color: #ffffff;
-  height: 62dvh;
   &.dark {
     background-color: #1a202c;
   }

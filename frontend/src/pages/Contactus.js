@@ -4,8 +4,13 @@ import pic from "../assets/banner-img.png";
 import { ReactComponent as LogoSvg } from "../assets/square.svg";
 
 const Section = styled.section`
+display: flex;
+height: calc( 100dvh - 134px);
   overflow: hidden;
-  padding: 40px 0;
+  display: flex;
+  flex-direction: row;
+    justify-content: center;
+    align-items: center;
   background-color: #ffffff;
   &.dark {
     background-color: #1a202c;
@@ -24,7 +29,6 @@ const Container = styled.div`
 
 const Row = styled.div`
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   margin: -16px;

@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 
 export function createApiCommunicator() {
   const instance = axios.create({
-    baseURL: "http://localhost:1000/api",
+    baseURL: "http://192.168.29.122:1000/api",
     timeout: 180000,
     headers: {
       "Content-Type": "application/json",
@@ -17,10 +17,6 @@ export function createApiCommunicator() {
   instance.interceptors.request.use(async (config) => {
     // Fetch the token from cookies
     const accessToken = Cookies.get("accessToken");
-    // console.log(
-    //   `\n ~ instance.interceptors.request.use ~ accessToken :- `,
-    //   accessToken,
-    // );
 
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;

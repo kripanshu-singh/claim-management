@@ -3,6 +3,13 @@ import { Table, Tag } from "antd";
 import { Link } from "react-router-dom"; // Import Link
 import InsurerProfile from "../components/InsurerProfile.js";
 import TableSkeleton from "./TableSkeleton.js";
+import styled from "styled-components";
+
+const StyledTable = styled(Table)`
+  height: calc( 100% - 75px) !important;
+  overflow: auto !important;  
+`;
+
 const columns = [
   {
     title: "Description",
@@ -32,8 +39,8 @@ const columns = [
         status === "pending"
           ? "geekblue"
           : status === "rejected"
-          ? "volcano"
-          : "green";
+            ? "volcano"
+            : "green";
       return <Tag color={color}>{status.toUpperCase()}</Tag>;
     },
   },
@@ -47,26 +54,22 @@ const columns = [
     dataIndex: "insurerId", // We are now referencing the entire insurerId object
     key: "_id",
     render: (insurerId) => {
-      console.log(`\n ~ insurerId :- `, insurerId);
-
       // Assuming insurerId contains the full name, split it into first and last name
       const { name = "" } = insurerId || {}; // Access insurerId object
       const [firstName, lastName] = name.split(" "); // Split name into first and last name
-      console.log(`\n ~ firstName :- `, firstName);
 
       return insurerId ? (
         <>
           <InsurerProfile insurerId={insurerId} />{" "}
         </>
       ) : (
-        "N/A" // If insurerId is missing, return "N/A"
+        "-" // If insurerId is missing, return "N/A"
       );
     },
   },
 ];
 
 const TableListing = ({ dataSource }) => {
-  console.log(`\n ~ TableListing ~ dataSource :- `, dataSource);
 
   if (!dataSource) {
     return (
@@ -79,11 +82,12 @@ const TableListing = ({ dataSource }) => {
 
   return (
     <>
-      <Table
+      <StyledTable
         rowKey={(data) => data._id}
         pagination={false}
         columns={columns}
         dataSource={[...dataSource]}
+        sticky
       />
     </>
   );

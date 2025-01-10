@@ -7,10 +7,12 @@ import { Button } from "antd";
 import claimApi from "../api/claimApi.js";
 
 const StyledContainer = styled.div`
-  padding: 0.5rem 0rem;
+  height: 66px;
   position: relative;
   width: 100%;
   border-bottom: 1px solid black;
+  display: flex;
+  align-items: center;
 `;
 const StyledLogo = styled(LogoSvg)`
   width: 80px; /* Set the width */
@@ -18,21 +20,13 @@ const StyledLogo = styled(LogoSvg)`
 `;
 
 const InnerContainer = styled.div`
+  width: 90%;
   font-size: 0.9rem;
   margin: 0 auto;
   display: flex;
-  max-width: 1250px;
   align-items: center;
   justify-content: space-between;
-  // padding: 16px 32px;
 
-  @media (min-width: 640px) {
-    // padding: 16px 48px;
-  }
-
-  @media (min-width: 1024px) {
-    // padding: 16px 64px;
-  }
   .logoandname {
     display: flex;
     align-items: center;
@@ -51,13 +45,10 @@ const Menu = styled.ul`
     display: inline-flex;
     gap: 22px;
   }
-
-
   li {
     list-style: none;
     padding: 0rem 1.25rem;
   }
-
   a {
     font-weight: 800;
     color: #4b5563;
@@ -65,7 +56,7 @@ const Menu = styled.ul`
     &:hover {
       color: #374151;
     }
-      
+  }
 `;
 
 const Navbar = () => {

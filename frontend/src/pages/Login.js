@@ -12,34 +12,17 @@ const StyledContainer = styled.div`
   height: 80dvh;
 `;
 
-// const StyledButton = styled(Button)`
-//   background-color: red;
-//   &:hover {
-//     background-color: blue;
-//   }
-// `;
-
 const Login = () => {
   const [api, contextHolder] = notification.useNotification();
 
   const navigate = useNavigate();
   const { sendToContext } = useSession();
-  // const onFinish = async (values) => {
-  //   const response = await claimApi.loginUser(values);
-  //   sendToContext(response);
-  //   navigate("/");
-  //   console.log("Success:", values);
-  // };
-  // const onFinishFailed = (errorInfo) => {
-  //   console.log("Failed:", errorInfo);
-  // };
 
   const onFinish = async (values) => {
     try {
       // Attempt to register the user
 
       const response = await claimApi.loginUser(values);
-      console.log("Registration response:", response);
 
       // Store relevant data in context (if needed)
       sendToContext(response);

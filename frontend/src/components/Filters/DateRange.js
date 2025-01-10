@@ -44,7 +44,6 @@ export const getDay = (date, isRange = true) => {
         else {
             value = dayjs(date, dateFormat);
         }
-        console.log("🚀 ~ getDay ~ return:", value)
         return value;
     }
     else if (date) {

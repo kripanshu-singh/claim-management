@@ -1,7 +1,7 @@
 import PropType from "prop-types";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
 import js_cookie from "js-cookie";
+import claimApi from "../api/claimApi.js";
 
 const SessionContext = createContext();
 
@@ -18,28 +18,12 @@ function useSession() {
 function SessionProvider({ children }) {
   const [accessToken, setAccessToken] = useState(null);
   const [userObject, setUserObject] = useState(null);
-  // console.log(`\n ~ SessionProvider ~ userObject :- `, userObject);
 
-  const getUserFormToken = async (accessToken) => {
+  const getUserFormToken = async () => {
     try {
       // Make the API request
-      const response = await axios.get(
-        `http://localhost:1000/api/users/profile`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
-
-      // Log the response for debugging
-      // console.log(`\n ~ getUserFormToken ~ response :- `, response.data);
-
-      // Process the response data (uncomment these if needed)
-      // setUserID(response?.data?._id);
-      setUserObject(response?.data);
-
-      return response.data; // Return data if required
+      const response = await claimApi.getProfile();
+      setUserObject(response);
     } catch (error) {
       // Handle errors
       console.error(`\n ~ getUserFormToken ~ error :- `, error.message);
@@ -53,7 +37,7 @@ function SessionProvider({ children }) {
 
     setAccessToken(accessToken);
     if (!userObject && accessToken) {
-      getUserFormToken(accessToken);
+      getUserFormToken();
     }
   }, []);
 

@@ -13,28 +13,35 @@ import { useNavigate } from "react-router-dom";
 import claimApi from "../api/claimApi.js";
 import Filters from "../components/Filters/index.js";
 import TableSkeleton from "./TableSkeleton.js";
+import StatusCard from "./StatusCard/index.js";
+import { getTaskSummary } from "./helper.js";
+import Welcome from "./Welcome.js";
 
 const { Meta } = Card;
 
 const StyledContainer = styled.div`
-  display: flex;
-  padding: 20px;
-  justify-content: flex-end;
-  gap: 80px;
-  align-items: stretch; /* Correct spelling for stretch */
-  height: 100%; /* Ensures container takes full available height */
-
-  .userNmae {
-    position: absolute;
-    top: 70px;
-    left: 30px;
-  }
+display: flex;
+height: calc( 100dvh - 134px);
 `;
 
-const filtersDiv = styled.div`
+const StyledDashboardContainer = styled.div`
+display: flex;
+.dateContainer{
   display: flex;
-  margin: 10px;
-  width: 100%;
+  flex-direction: column;
+  flex :1;
+  margin: 20px;
+}
+.tableContainer{
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgb(165, 165, 165);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 20px;
+  width: 68%;
+  margin-left: 0px;
+}
 `;
 
 const InsurerDashboard = () => {
@@ -75,7 +82,6 @@ const InsurerDashboard = () => {
   const fetchClaims = async () => {
     try {
       const response = await claimApi.getAllClaims();
-      console.log(`\n ~ fetchClaims ~ response :- `, response);
 
       if (response?.claims) {
         // Ensure each claim has a unique key
@@ -96,12 +102,11 @@ const InsurerDashboard = () => {
     }
   };
 
-  console.log(`\n ~ InsurerDashboard ~ claims :- `, claims);
   useEffect(() => {
     fetchClaims();
   }, []);
   return (
-    <>
+    <StyledContainer>
       {!claims && (
         <div>
           <TableSkeleton />
@@ -109,54 +114,23 @@ const InsurerDashboard = () => {
         </div>
       )}
       {claims && (
-        <>
-          <StyledContainer className="">
-            <h2 className="userNmae">
-              Welcome, {userObject?.name},
-              <br /> {dayName}, {month} {date} {year}
-            </h2>
-            <Card
-              style={{
-                width: 300,
-                //   margin: "auto",
-              }}
-              cover={
-                <img
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
-              }
-              actions={[
-                <SettingOutlined key="setting" />,
-                <EditOutlined key="edit" />,
-                <EllipsisOutlined key="ellipsis" />,
-              ]}
-            >
-              <Meta
-                avatar={
-                  <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />
-                }
-                title="Card title"
-                description="This is the description"
-              />
-            </Card>
-            {/* <div
-              className=""
-              style={{ margin: "auto", border: "1px solid black" }}
-            >
-              <ArrowRightOutlined style={{ fontSize: "250px" }} />
-            </div> */}
-          </StyledContainer>
-          <Filters
-            setClaims={setClaims}
-            open={open}
-            setOpen={setOpen}
-            listData={listData}
-          />
-          <TableListing dataSource={[...claims]} />
-        </>
+        <StyledDashboardContainer>
+          <div className="dateContainer">
+            <Welcome name={userObject?.name} />
+            <StatusCard taskDetailData={getTaskSummary(listData)} />
+          </div>
+          <div className="tableContainer">
+            <Filters
+              setClaims={setClaims}
+              open={open}
+              setOpen={setOpen}
+              listData={listData}
+            />
+            <TableListing dataSource={[...claims]} />
+          </div>
+        </StyledDashboardContainer>
       )}
-    </>
+    </StyledContainer>
   );
 };
 export default InsurerDashboard;

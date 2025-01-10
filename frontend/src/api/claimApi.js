@@ -22,12 +22,12 @@ const claimApi = {
   },
 
   // !Logout User
-  logoutuser(payload) {
-    return this.communicator.post(`/users/logout`, payload);
+  logoutuser() {
+    return this.communicator.post(`/users/logout`);
   },
 
   // !Get User Profile
-  getProfile(payload) {
+  getProfile() {
     return this.communicator.get(`/users/profile`);
   },
 
@@ -41,7 +41,7 @@ const claimApi = {
   },
   // !Get all Claim (INSURERS)
   getAllClaims(params) {
-    return this.communicator.get(`/claim/`, { params });
+    return this.communicator.get(`/claim`, { params });
   },
 
   // !Get Claim by _id

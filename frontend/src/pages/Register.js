@@ -46,7 +46,6 @@ const Register = () => {
     try {
       // Attempt to register the user
       const response = await claimApi.registerUser(values);
-      console.log("Registration response:", response);
 
       // Store relevant data in context (if needed)
       sendToContext(response);

@@ -1,6 +1,19 @@
 import React, { useState } from "react";
-import { Button, Input, message } from "antd";
+import { Button, Input, message, notification } from "antd";
 import claimApi from "../api/claimApi.js"; // Import your claim API
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+
+const StyledContainer = styled.div`
+  display: flex;
+    flex-direction: column;
+  .claim-actions-buttons{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
 
 const { TextArea } = Input;
 
@@ -8,6 +21,8 @@ const ClaimActions = ({ claimId, initialStatus }) => {
   const [insurerComments, setInsurerComments] = useState(""); // TextArea value
   const [approvedAmount, setApprovedAmount] = useState(""); // Input number value
   const [isClaimProcessed, setIsClaimProcessed] = useState(false); // To track if the claim has been processed
+  const [api, contextHolder] = notification.useNotification();
+  const navigate = useNavigate();
 
   // Disable/Hide actions if the claim is already approved or rejected
   const isDisabled =
@@ -24,8 +39,11 @@ const ClaimActions = ({ claimId, initialStatus }) => {
 
     try {
       await claimApi.updateClaim(claimId, payload);
-      message.success("Claim approved successfully!");
+      api.success({
+        message: "Claim approved successfully!",
+      });
       setIsClaimProcessed(true); // Mark claim as processed
+      navigate("/dashboard")
     } catch (error) {
       console.error("Error updating claim:", error);
       message.error("Failed to approve the claim");
@@ -41,8 +59,11 @@ const ClaimActions = ({ claimId, initialStatus }) => {
 
     try {
       await claimApi.updateClaim(claimId, payload);
-      message.success("Claim rejected successfully!");
+      api.success({
+        message: "Claim rejected successfully!",
+      });
       setIsClaimProcessed(true); // Mark claim as processed
+      navigate("/dashboard")
     } catch (error) {
       console.error("Error updating claim:", error);
       message.error("Failed to reject the claim");
@@ -50,7 +71,8 @@ const ClaimActions = ({ claimId, initialStatus }) => {
   };
 
   return (
-    <div>
+    <StyledContainer>
+      {contextHolder}
       <TextArea
         rows={4}
         placeholder="Any message for claimer"
@@ -68,24 +90,28 @@ const ClaimActions = ({ claimId, initialStatus }) => {
         onChange={(e) => setApprovedAmount(e.target.value)}
         disabled={isDisabled} // Disable Input field if the claim is processed
       />
-      <Button
-        type="primary"
-        onClick={handleApprove}
-        style={{ marginTop: "10px" }}
-        disabled={isDisabled} // Disable button if the claim is processed
-      >
-        Approve
-      </Button>
-      <Button
-        type="primary"
-        danger
-        onClick={handleReject}
-        style={{ marginTop: "10px", marginLeft: "10px" }}
-        disabled={isDisabled} // Disable button if the claim is processed
-      >
-        Reject
-      </Button>
-    </div>
+      <div className="claim-actions-buttons">
+        <Button
+          type="primary"
+          onClick={handleApprove}
+          style={{ marginTop: "10px" }}
+          disabled={isDisabled || approvedAmount === ""} // Disable button if the claim is processed
+        >
+          Approve
+        </Button>
+        <Button
+          type="primary"
+          danger
+          onClick={handleReject}
+          style={{ marginTop: "10px", marginLeft: "10px" }}
+          disabled={isDisabled} // Disable button if the claim is processed
+        >
+          Reject
+        </Button>
+
+      </div>
+
+    </StyledContainer>
   );
 };
 

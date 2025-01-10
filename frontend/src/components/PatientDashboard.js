@@ -5,74 +5,46 @@ import {
   EllipsisOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { Button, ConfigProvider, Space, message, Avatar, Card } from "antd";
+import { Avatar, Card, message } from "antd";
 import styled from "styled-components";
 import TableListing from "./TableListing.js";
 import { useSession } from "../context/session.js";
+import { useNavigate } from "react-router-dom";
 import claimApi from "../api/claimApi.js";
-import { Link, useNavigate } from "react-router-dom";
-import { AntDesignOutlined } from "@ant-design/icons";
-import { createStyles } from "antd-style";
+import Filters from "../components/Filters/index.js";
+import TableSkeleton from "./TableSkeleton.js";
+import ProjectStatus from "./ProjectStatus.js";
+import { getTaskSummary } from "./helper.js";
+import Welcome from "./Welcome.js";
 
 const { Meta } = Card;
-const useStyle = createStyles(({ prefixCls, css }) => ({
-  linearGradientButton: css`
-    &.${prefixCls}-btn-primary:not([disabled]):not(
-        .${prefixCls}-btn-dangerous
-      ) {
-      > span {
-        position: relative;
-        font-weight: 500;
-      }
-
-      &::before {
-        content: "";
-        background: linear-gradient(135deg, #6253e1, #04befe);
-        position: absolute;
-        inset: -1px;
-        opacity: 1;
-        transition: all 0.3s;
-        border-radius: inherit;
-      }
-
-      &:hover::before {
-        opacity: 0;
-      }
-    }
-  `,
-}));
 
 const StyledContainer = styled.div`
+display: flex;
+height: calc( 100dvh - 134px);
+`;
+
+const StyledDashboardContainer = styled.div`
+display: flex;
+.dateContainer{
   display: flex;
-  padding: 20px;
-  justify-content: flex-end;
-  gap: 80px;
-  align-items: stretch; /* Correct spelling for stretch */
-  height: 100%; /* Ensures container takes full available height */
-
-  .userNmae {
-    position: absolute;
-    top: 70px;
-    left: 30px;
-  }
-
-  .spaceDiv {
-    // height: -webkit-fill-available;
-    .gradient-button {
-      flex: 1; /* Let the button grow to fill available space */
-      height: 100%; /* Take full height of parent */
-      aspect-ratio: 2 / 1; /* Makes it a square */
-      display: flex;
-      justify-content: center;
-      width: 150%;
-      font-size: 1.5rem;
-      align-items: center; /* Center content inside the button */
-    }
-  }
+  flex-direction: column;
+  flex :1;
+  margin: 20px;
+}
+.tableContainer{
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgb(165, 165, 165);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 20px;
+  width: 68%;
+  margin-left: 0px;
+}
 `;
 
 const PatientDashboard = () => {
-  const { styles } = useStyle();
   const { userObject } = useSession();
   const now = new Date(Date.now());
 
@@ -91,6 +63,8 @@ const PatientDashboard = () => {
   const { sendToContext } = useSession();
   const [loading, setLoading] = useState(false); // Add loading state
   const [claims, setClaims] = useState(null);
+  const [listData, setListData] = useState(null);
+  const [open, setOpen] = useState("");
 
   function formatDate(dateString) {
     const options = {
@@ -105,9 +79,6 @@ const PatientDashboard = () => {
     return formattedDate.replace(",", ""); // Removes any commas if present
   }
 
-  const formatted = formatDate("2025-01-08T08:19:51.863Z");
-  console.log(formatted); // Output: "08 Jan 2025"
-
   const fetchClaims = async () => {
     try {
       const response = await claimApi.getPatientClaims();
@@ -119,6 +90,7 @@ const PatientDashboard = () => {
           submissionDate: formatDate(claim.submissionDate),
         }));
         setClaims(claimsWithKeys);
+        setListData(claimsWithKeys);
         message.success("Claims fetched successfully!");
       } else {
         message.error("Failed to fetch claims: Invalid response data.");
@@ -132,67 +104,32 @@ const PatientDashboard = () => {
   useEffect(() => {
     fetchClaims();
   }, []);
-
   return (
-    <>
-      <StyledContainer className="">
-        <h2 className="userNmae">
-          Welcome, {userObject?.name},
-          <br /> {dayName}, {month} {date} {year}
-        </h2>
-        <Card
-          style={{
-            width: 300,
-            //   margin: "auto",
-          }}
-          cover={
-            <img
-              alt="example"
-              src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+    <StyledContainer>
+      {!claims && (
+        <div>
+          <TableSkeleton />
+          {/* Loading... */}
+        </div>
+      )}
+      {claims && (
+        <StyledDashboardContainer>
+          <div className="dateContainer">
+            <Welcome name={userObject?.name} />
+            <ProjectStatus taskDetailData={getTaskSummary(listData)} />
+          </div>
+          <div className="tableContainer">
+            <Filters
+              setClaims={setClaims}
+              open={open}
+              setOpen={setOpen}
+              listData={listData}
             />
-          }
-          actions={[
-            <SettingOutlined key="setting" />,
-            <EditOutlined key="edit" />,
-            <EllipsisOutlined key="ellipsis" />,
-          ]}
-        >
-          <Meta
-            avatar={
-              <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />
-            }
-            title="Card title"
-            description="This is the description"
-          />
-        </Card>
-        {/* <div className="" style={{ margin: "auto", border: "1px solid black" }}>
-          <Link to="/raise_claim">
-            <ArrowRightOutlined style={{ fontSize: "250px" }} />
-          </Link>
-        </div> */}
-        <ConfigProvider
-          button={{
-            className: styles.linearGradientButton,
-          }}
-        >
-          {/* <Space className="spaceDiv"> */}
-          <Link to="/raise_claim">
-            <Button
-              className="gradient-button"
-              type="primary"
-              size="large"
-              // icon={}
-            >
-              Claim Insurence &nbsp;
-              <ArrowRightOutlined />
-            </Button>
-            {/* <Button size="large">Button</Button> */}
-          </Link>
-          {/* </Space> */}
-        </ConfigProvider>
-      </StyledContainer>
-      <TableListing dataSource={claims} />
-    </>
+            <TableListing dataSource={[...claims]} />
+          </div>
+        </StyledDashboardContainer>
+      )}
+    </StyledContainer>
   );
 };
 export default PatientDashboard;

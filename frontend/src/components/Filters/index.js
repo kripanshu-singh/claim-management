@@ -9,8 +9,11 @@ import { filterByDateRange, sortData, getMinMaxClaimAmount } from "./helper.js";
 
 const StyledContainer = styled.div`
   display: flex;
+  padding-bottom: 16px;
   .table-name {
     flex: 1;
+    display: flex;
+    align-items: center;
   }
   .filter-container {
     display: flex;
@@ -90,7 +93,11 @@ const Filters = ({ setClaims, listData, open, setOpen }) => {
 
   return (
     <StyledContainer>
-      <div className="table-name">Patient Information</div>
+      <div className="table-name">
+        <span>
+          Patient Information
+        </span>
+      </div>
       <div className="filter-container">
         <PopoverFilter
           key="status"

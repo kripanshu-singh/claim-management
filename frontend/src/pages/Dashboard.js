@@ -5,7 +5,6 @@ import { useSession } from "../context/session.js";
 
 const Dashboard = () => {
   const { userObject } = useSession();
-
   return (
     <div>
       {userObject?.role === "insurer" ? (

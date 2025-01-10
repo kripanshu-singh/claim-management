@@ -4,6 +4,7 @@ import styled from "styled-components";
 import claimApi from "../api/claimApi.js";
 import { useSession } from "../context/session.js";
 import { useNavigate } from "react-router-dom";
+import UploadDocument from "../components/UploadDocument.js";
 
 const { TextArea } = Input;
 
@@ -11,7 +12,16 @@ const StyledContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: calc( 100dvh - 134px);
+  .claim-form{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 70%;
+  }
+  .ant-upload-wrapper{
+    align-self: center;
+  }
 `;
 
 const Claim = () => {
@@ -26,6 +36,10 @@ const Claim = () => {
   const [description, setDescription] = useState("");
   const [document, setDocument] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const enableSubmit = () => {
+    return name && email && claimAmount && description && document;
+  };
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -80,14 +94,14 @@ const Claim = () => {
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          // required
+        // required
         />
         <Input
           placeholder="Email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          // required
+        // required
         />
         <InputNumber
           placeholder="Claim Amount"
@@ -104,18 +118,14 @@ const Claim = () => {
           onChange={(e) => setDescription(e.target.value)}
           required
         />
-        <input
-          type="file"
-          onChange={handleFileChange}
-          accept="image/*,application/pdf"
-          required
-        />
+        <UploadDocument setDocument={setDocument} />
 
         <Button
           type="primary"
           htmlType="submit"
           loading={loading}
           style={{ marginTop: "1rem" }}
+          disabled={!enableSubmit()}
         >
           Submit Claim
         </Button>
