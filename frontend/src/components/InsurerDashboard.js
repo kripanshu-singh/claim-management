@@ -12,15 +12,23 @@ import { useSession } from "../context/session.js";
 import { useNavigate } from "react-router-dom";
 import claimApi from "../api/claimApi.js";
 import Filters from "../components/Filters/index.js";
+import TableSkeleton from "./TableSkeleton.js";
 
 const { Meta } = Card;
 
 const StyledContainer = styled.div`
   display: flex;
   padding: 20px;
-  // justify-content: center;
-  // align-items: center;
-  // height: 100%;
+  justify-content: flex-end;
+  gap: 80px;
+  align-items: stretch; /* Correct spelling for stretch */
+  height: 100%; /* Ensures container takes full available height */
+
+  .userNmae {
+    position: absolute;
+    top: 70px;
+    left: 30px;
+  }
 `;
 
 const filtersDiv = styled.div`
@@ -48,8 +56,8 @@ const InsurerDashboard = () => {
   const { sendToContext } = useSession();
   const [loading, setLoading] = useState(false); // Add loading state
   const [claims, setClaims] = useState(null);
-    const [listData, setListData] = useState(null);
-    const [open, setOpen] = useState("");
+  const [listData, setListData] = useState(null);
+  const [open, setOpen] = useState("");
 
   function formatDate(dateString) {
     const options = {
@@ -94,11 +102,16 @@ const InsurerDashboard = () => {
   }, []);
   return (
     <>
-      {!claims && <div>Loading...</div>}
+      {!claims && (
+        <div>
+          <TableSkeleton />
+          {/* Loading... */}
+        </div>
+      )}
       {claims && (
         <>
           <StyledContainer className="">
-            <h2>
+            <h2 className="userNmae">
               Welcome, {userObject?.name},
               <br /> {dayName}, {month} {date} {year}
             </h2>
@@ -127,12 +140,12 @@ const InsurerDashboard = () => {
                 description="This is the description"
               />
             </Card>
-            <div
+            {/* <div
               className=""
               style={{ margin: "auto", border: "1px solid black" }}
             >
               <ArrowRightOutlined style={{ fontSize: "250px" }} />
-            </div>
+            </div> */}
           </StyledContainer>
           <Filters
             setClaims={setClaims}

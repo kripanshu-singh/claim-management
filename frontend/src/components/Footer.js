@@ -96,14 +96,16 @@ const Footer = () => {
               Designed by
               <span>
                 &nbsp;
-                <a
-                  target="_blank"
-                  rel="noreferrer"
-                  href="https://kripanshu-singh.github.io/me/"
-                  style={{ color: "black", fontWeight: "bolder" }}
-                >
-                  Kripanshu Singh
-                </a>
+                <u>
+                  <a
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://kripanshu-singh.github.io/me/"
+                    style={{ color: "black", fontWeight: "bolder" }}
+                  >
+                    Kripanshu Singh
+                  </a>
+                </u>
               </span>
             </div>
           </div>

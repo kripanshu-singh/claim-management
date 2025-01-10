@@ -2,6 +2,7 @@ import React from "react";
 import { Table, Tag } from "antd";
 import { Link } from "react-router-dom"; // Import Link
 import InsurerProfile from "../components/InsurerProfile.js";
+import TableSkeleton from "./TableSkeleton.js";
 const columns = [
   {
     title: "Description",
@@ -13,12 +14,12 @@ const columns = [
     ) => <Link to={`/claims/${record._id}`}>{text}</Link>,
   },
   {
-    title: "Claimed Amount",
+    title: "Claimed Amount (₹)",
     dataIndex: "claimAmount",
     key: "_id",
   },
   {
-    title: "Approved Amount",
+    title: "Approved Amount (₹)",
     dataIndex: "approvedAmount",
     key: "_id",
   },
@@ -67,9 +68,13 @@ const columns = [
 const TableListing = ({ dataSource }) => {
   console.log(`\n ~ TableListing ~ dataSource :- `, dataSource);
 
-  // Check if dataSource is null or empty and return loading state if so
-  if (!dataSource || dataSource.length === 0) {
-    return <div>Loading...</div>;
+  if (!dataSource) {
+    return (
+      <div>
+        {/* <TableSkeleton /> */}
+        Loading...
+      </div>
+    );
   }
 
   return (

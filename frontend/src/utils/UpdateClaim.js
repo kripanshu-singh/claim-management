@@ -57,6 +57,7 @@ const ClaimActions = ({ claimId, initialStatus }) => {
         value={insurerComments}
         onChange={(e) => setInsurerComments(e.target.value)}
         disabled={isDisabled} // Disable TextArea if the claim is processed
+        style={{ marginBottom: "10px" }}
       />
       <Input
         prefix="₹"

@@ -8,7 +8,11 @@ const Dashboard = () => {
 
   return (
     <div>
-      {userObject?.role === "insurer" ? <InsurerDashboard /> : <PatientDashboard />}
+      {userObject?.role === "insurer" ? (
+        <InsurerDashboard />
+      ) : (
+        <PatientDashboard />
+      )}
     </div>
   );
 };

@@ -17,8 +17,8 @@ const Home = () => {
 
   return (
     <div>
-      <h1>Hello {userObject?.name}</h1>
-      <h2>You are a {userObject?.role}</h2>
+      {/* <h1>Hello {userObject?.name}</h1>
+      <h2>You are a {userObject?.role}</h2> */}
     </div>
   );
 };

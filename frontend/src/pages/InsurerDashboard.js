@@ -48,8 +48,8 @@ const InsurerDashboard = () => {
   const { sendToContext } = useSession();
   const [loading, setLoading] = useState(false); // Add loading state
   const [claims, setClaims] = useState(null);
-    const [listData, setListData] = useState(null);
-    const [open, setOpen] = useState("");
+  const [listData, setListData] = useState(null);
+  const [open, setOpen] = useState("");
 
   function formatDate(dateString) {
     const options = {

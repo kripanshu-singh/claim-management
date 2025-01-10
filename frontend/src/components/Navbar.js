@@ -36,6 +36,7 @@ const InnerContainer = styled.div`
   .logoandname {
     display: flex;
     align-items: center;
+    text-decoration: none;
   }
   .auth-buttons {
     display: flex;
@@ -64,6 +65,7 @@ const Menu = styled.ul`
     &:hover {
       color: #374151;
     }
+      
 `;
 
 const Navbar = () => {

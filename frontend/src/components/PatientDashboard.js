@@ -5,24 +5,74 @@ import {
   EllipsisOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { message, Avatar, Card } from "antd";
+import { Button, ConfigProvider, Space, message, Avatar, Card } from "antd";
 import styled from "styled-components";
 import TableListing from "./TableListing.js";
 import { useSession } from "../context/session.js";
 import claimApi from "../api/claimApi.js";
 import { Link, useNavigate } from "react-router-dom";
+import { AntDesignOutlined } from "@ant-design/icons";
+import { createStyles } from "antd-style";
 
 const { Meta } = Card;
+const useStyle = createStyles(({ prefixCls, css }) => ({
+  linearGradientButton: css`
+    &.${prefixCls}-btn-primary:not([disabled]):not(
+        .${prefixCls}-btn-dangerous
+      ) {
+      > span {
+        position: relative;
+        font-weight: 500;
+      }
+
+      &::before {
+        content: "";
+        background: linear-gradient(135deg, #6253e1, #04befe);
+        position: absolute;
+        inset: -1px;
+        opacity: 1;
+        transition: all 0.3s;
+        border-radius: inherit;
+      }
+
+      &:hover::before {
+        opacity: 0;
+      }
+    }
+  `,
+}));
 
 const StyledContainer = styled.div`
   display: flex;
   padding: 20px;
-  //   justify-content: center;
-  //   align-items: center;
-  //   height: 100%;
+  justify-content: flex-end;
+  gap: 80px;
+  align-items: stretch; /* Correct spelling for stretch */
+  height: 100%; /* Ensures container takes full available height */
+
+  .userNmae {
+    position: absolute;
+    top: 70px;
+    left: 30px;
+  }
+
+  .spaceDiv {
+    // height: -webkit-fill-available;
+    .gradient-button {
+      flex: 1; /* Let the button grow to fill available space */
+      height: 100%; /* Take full height of parent */
+      aspect-ratio: 2 / 1; /* Makes it a square */
+      display: flex;
+      justify-content: center;
+      width: 150%;
+      font-size: 1.5rem;
+      align-items: center; /* Center content inside the button */
+    }
+  }
 `;
 
 const PatientDashboard = () => {
+  const { styles } = useStyle();
   const { userObject } = useSession();
   const now = new Date(Date.now());
 
@@ -86,7 +136,7 @@ const PatientDashboard = () => {
   return (
     <>
       <StyledContainer className="">
-        <h2>
+        <h2 className="userNmae">
           Welcome, {userObject?.name},
           <br /> {dayName}, {month} {date} {year}
         </h2>
@@ -115,11 +165,31 @@ const PatientDashboard = () => {
             description="This is the description"
           />
         </Card>
-        <div className="" style={{ margin: "auto", border: "1px solid black" }}>
+        {/* <div className="" style={{ margin: "auto", border: "1px solid black" }}>
           <Link to="/raise_claim">
             <ArrowRightOutlined style={{ fontSize: "250px" }} />
           </Link>
-        </div>
+        </div> */}
+        <ConfigProvider
+          button={{
+            className: styles.linearGradientButton,
+          }}
+        >
+          {/* <Space className="spaceDiv"> */}
+          <Link to="/raise_claim">
+            <Button
+              className="gradient-button"
+              type="primary"
+              size="large"
+              // icon={}
+            >
+              Claim Insurence &nbsp;
+              <ArrowRightOutlined />
+            </Button>
+            {/* <Button size="large">Button</Button> */}
+          </Link>
+          {/* </Space> */}
+        </ConfigProvider>
       </StyledContainer>
       <TableListing dataSource={claims} />
     </>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, Card, message } from "antd";
+import { Button, Card, message, Tag } from "antd";
 import FileViewer from "react-file-viewer"; // Import FileViewer
 import claimApi from "../api/claimApi.js";
 import { useSession } from "../context/session.js"; // Assuming user role is stored in session
@@ -69,73 +69,98 @@ const SingleClaim = () => {
     return extension.toLowerCase();
   };
 
+  const getStatusTag = (status) => {
+    const color =
+      status === "pending"
+        ? "geekblue"
+        : status === "rejected"
+        ? "volcano"
+        : "green"; // Default to green for approved
+    return <Tag color={color}>{status.toUpperCase()}</Tag>;
+  };
+
   // Check if userObject is "insurer" and claim status is "pending"
   const isInsurerAndPending =
     userObject?.role === "insurer" && claim.status === "pending";
 
   return (
-    <Card
-      title={`Claim Details for ${claim.name}`}
-      style={{ width: "80%", margin: "20px auto" }}
-    >
-      <p>
-        <strong>Description:</strong> {claim.description}
-      </p>
-      <p>
-        <strong>Claimed Amount:</strong> {claim.claimAmount}
-      </p>
-      <p>
-        <strong>Approved Amount:</strong> {claim.approvedAmount}
-      </p>
-      <p>
-        <strong>Status:</strong> {claim.status}
-      </p>
-      <p>
-        <strong>Submission Date:</strong> {claim.submissionDate}
-      </p>
-      <p>
-        <strong>Email:</strong> {claim.email}
-      </p>
-      <p>
-        <strong>Insurer Comments:</strong> {claim.insurerComments || "N/A"}
-      </p>
+    <>
+      <Card
+        title={
+          <span>
+            <span style={{ fontWeight: "400", color: "#8c8c8c" }}>
+              Claim Details for{" "}
+            </span>
+            <br />
+            <span style={{ fontWeight: "bold", fontSize: "20px", color: "#000" }}>
+              {claim.name}
+            </span>
+          </span>
+        }
+        style={{ width: "80%", margin: "20px auto" }}
+      >
+        <p>
+          <strong>Description:</strong> {claim.description}
+        </p>
+        <p>
+          <strong>Claimed Amount:</strong> ₹{claim.claimAmount}
+        </p>
+        <p>
+          <strong>Approved Amount:</strong> ₹{claim.approvedAmount}
+        </p>
+        <p>
+          <strong>Status:</strong> {getStatusTag(claim.status)}
+        </p>
+        <p>
+          <strong>Submission Date:</strong> {claim.submissionDate}
+        </p>
+        <p>
+          <strong>Email:</strong> {claim.email}
+        </p>
+        <p>
+          <strong>Insurer Comments:</strong> {claim.insurerComments || "N/A"}
+        </p>
 
-      {claim.documentUrl ? (
-        <div style={{ marginTop: "20px" }}>
-          <h3>Document Preview:</h3>
-          {!previewError ? (
-            <FileViewer
-              fileType={getFileType(claim.documentUrl)} // Determine the file type from the URL
-              filePath={claim.documentUrl} // Document URL
-              onError={handlePreviewError} // Handle errors
-            />
-          ) : (
-            <p style={{ color: "red" }}>
-              Unable to preview the document. You can download it{" "}
-              <a
-                href={claim.documentUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                here
-              </a>
-              .
-            </p>
-          )}
-        </div>
-      ) : (
-        <p>No document provided.</p>
-      )}
+        {claim.documentUrl ? (
+          <div style={{ marginTop: "20px", marginBottom: "20px" }}>
+            <h3>Document Preview:</h3>
+            {!previewError ? (
+              <FileViewer
+                fileType={getFileType(claim.documentUrl)} // Determine the file type from the URL
+                filePath={claim.documentUrl} // Document URL
+                onError={handlePreviewError} // Handle errors
+              />
+            ) : (
+              <p style={{ color: "red" }}>
+                Unable to preview the document. You can download it{" "}
+                <a
+                  href={claim.documentUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  here
+                </a>
+                .
+              </p>
+            )}
+          </div>
+        ) : (
+          <p>No document provided.</p>
+        )}
 
-      {/* Conditionally render buttons */}
-      {isInsurerAndPending &&
-        (console.log(`\n ~ SingleClaim ~ isInsurerAndPending :- `, claim._id),
-        (
-          <>
-            <ClaimActions claimId={claim?._id} initialStatus={claim?.status} />
-          </>
-        ))}
-    </Card>
+        {/* Conditionally render buttons */}
+        {isInsurerAndPending &&
+          (console.log(`\n ~ SingleClaim ~ isInsurerAndPending :- `, claim._id),
+          (
+            <>
+              <ClaimActions
+                claimId={claim?._id}
+                initialStatus={claim?.status}
+              />
+            </>
+          ))}
+      </Card>
+    </>
   );
 };
 
