@@ -9,31 +9,27 @@ import asyncHandler from "../utils/asyncHandler.js";
  * @access Private (Patient Only)
  */
 export const submitClaim = asyncHandler(async (req, res) => {
-  const { name, email, claimAmount, description } = req.body;
+  const { name, email, claimAmount, description, document } = req.body;
 
-  if (!req.file) {
-    return res.status(400).json({ message: "Document upload is required." });
-  }
-  if (name === "")
+  // Validate required fields
+  if (!name || name.trim() === "") {
     return res.status(400).json({ message: "Patient name is required." });
-  if (email === "")
+  }
+  if (!email || email.trim() === "") {
     return res.status(400).json({ message: "Patient email is required." });
-
-  // Upload file to Cloudinary
-  const documentUpload = await uploadOnCloudinary(req.file.path);
-  console.log(`\n ~ submitClaim ~ documentUpload :- `, documentUpload);
-
-  if (!documentUpload || !documentUpload.url) {
-    return res.status(500).json({ message: "Failed to upload document." });
+  }
+  if (!document || document.trim() === "") {
+    return res.status(400).json({ message: "Document URL is required." });
   }
 
   try {
+    // Create a claim record in the database
     const claim = await Claim.create({
       name,
       email,
       claimAmount,
       description,
-      documentUrl: documentUpload.url,
+      documentUrl: document, // Save the document URL directly
       ownerId: req.user._id,
     });
 
@@ -211,5 +207,43 @@ export const getPatientClaims = async (req, res) => {
       message: "Error fetching patient claims.",
       error: error.message,
     });
+  }
+};
+
+/**
+ * @desc Delete the document for a patient
+ * @route Delete /api/claims/
+ * @access Private (Patient Only)
+ */
+export const deleteDocument = async (req, res, next) => {
+  try {
+    const { publicId } = req.body; // Expect publicId in the request body
+
+    // Validate input
+    if (!publicId) {
+      return res.status(400).json({
+        success: false,
+        message: "publicId is required to delete the document",
+      });
+    }
+
+    // Call the Cloudinary utility to delete the document
+    const response = await deleteFromCloudinary(publicId);
+
+    if (response?.result === "ok") {
+      return res.status(200).json({
+        success: true,
+        message: "Document deleted successfully",
+      });
+    }
+
+    // Handle cases where deletion fails
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete the document",
+    });
+  } catch (error) {
+    console.error("Error in deleteDocument controller:", error);
+    next(new ApiError("An error occurred while deleting the document", 500));
   }
 };

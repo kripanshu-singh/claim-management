@@ -5,6 +5,7 @@ import {
   getClaimById,
   updateClaim,
   getPatientClaims,
+  deleteDocument,
 } from "../controllers/claim.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { protect, authorize } from "../middlewares/auth.middleware.js";
@@ -16,13 +17,7 @@ const router = express.Router();
  * @route POST /api/claims
  * @access Private (Patient Only)
  */
-router.post(
-  "/",
-  protect,
-  authorize("patient"),
-  upload.single("document"),
-  submitClaim,
-);
+router.post("/", protect, authorize("patient"), submitClaim);
 
 /**
  * @desc Get claims for a patient
@@ -51,5 +46,7 @@ router.get("/:claimId", protect, getClaimById);
  * @access Private (Insurer Only)
  */
 router.put("/:claimId", protect, authorize("insurer"), updateClaim);
+
+router.delete("/", deleteDocument);
 
 export default router;
