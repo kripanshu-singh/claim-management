@@ -23,7 +23,6 @@ export const registerUser = async (req, res) => {
       password, // Pre-save hook will hash the password
       role,
     });
-    console.log(`\n ~ registerUser ~ newUser :- `, newUser);
 
     const accessToken = newUser.generateAccessToken();
     const refreshToken = newUser.generateRefreshToken();
@@ -144,7 +143,6 @@ export const logoutUser = (req, res) => {
 export const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
-    console.log(`\n ~ getUserProfile ~ user :- `, user);
 
     if (!user) {
       return res.status(404).json({ message: "User not found." });

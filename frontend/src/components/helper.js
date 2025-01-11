@@ -1,7 +1,7 @@
 export function getTaskSummary(data) {
     // Initialize counters for each task type
     const taskCounts = {
-        completed: 0,
+        approved: 0,
         pending: 0,
         rejected: 0
     };
@@ -9,7 +9,7 @@ export function getTaskSummary(data) {
     // Loop through the data and count tasks by their status
     data.forEach(item => {
         if (item.status === 'approved') {
-            taskCounts.completed++;
+            taskCounts.approved++;
         } else if (item.status === 'pending') {
             taskCounts.pending++;
         } else if (item.status === 'rejected') {
@@ -23,11 +23,11 @@ export function getTaskSummary(data) {
     // Prepare the result array with calculated values
     const result = [
         {
-            taskType: "completed",
-            noOfTask: taskCounts.completed,
-            val: Math.round((taskCounts.completed / totalTasks) * 100), // Percentage of completed tasks
+            taskType: "approved",
+            noOfTask: taskCounts.approved,
+            val: Math.round((taskCounts.approved / totalTasks) * 100), // Percentage of approved tasks
             totalTasks: totalTasks,
-            color: "#70C78E" // Color for completed tasks
+            color: "#70C78E" // Color for approved tasks
         },
         {
             taskType: "pending",

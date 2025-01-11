@@ -13,10 +13,10 @@ const MainContainer = styled.div`
   height: calc(100vh - 134px); // Use min-height for better responsiveness
   background-color: #f0f2f5; // Light background color like in the image
   font-family: "Poppins", sans-serif; // Apply Poppins font
-  `;
+`;
 
 const CardContainer = styled.div`
-transform: scale(1.1);
+  transform: scale(1.1);
   background-color: white;
   padding: 32px;
   border-radius: 8px;
@@ -47,6 +47,7 @@ const ImageContainer = styled.div`
 
 const Login = () => {
   const [api, contextHolder] = notification.useNotification();
+  const [loading, setLoading] = React.useState(false);
 
   const navigate = useNavigate();
   const { sendToContext } = useSession();
@@ -54,13 +55,15 @@ const Login = () => {
   const onFinish = async (values) => {
     try {
       // Attempt to register the user
-
+      setLoading(true);
       const response = await claimApi.loginUser(values);
 
       // Store relevant data in context (if needed)
       sendToContext(response);
 
       // Redirect to dashboard after successful registration
+      setLoading(false);
+
       navigate("/dashboard");
 
       // Handle successful registration
@@ -125,7 +128,12 @@ const Login = () => {
                   <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                     {" "}
                     {/* Center the button */}
-                    <Button type="primary" htmlType="submit" block>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      block
+                      loading={loading}
+                    >
                       {" "}
                       {/* Block button for full width */}
                       Submit

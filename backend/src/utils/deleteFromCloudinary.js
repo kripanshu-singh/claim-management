@@ -18,15 +18,4 @@ export const deleteFromCloudinary = async (publicId) => {
   }
 };
 
-// const deleteFromCloudinary = async (publicId) => {
-//   // console.log(`\n ~ deleteFromCloudinary ~ publicId :- `, publicId);
-//   try {
-//     const response = await cloudinary.uploader.destroy(publicId);
-//     // console.log(`\n ~ deleteFromCloudinary ~ response :- `, response);
-//     return response;
-//   } catch (error) {
-//     throw new ApiError("Couldn't delete from cloudinary");
-//   }
-// };
-
 export default deleteFromCloudinary;

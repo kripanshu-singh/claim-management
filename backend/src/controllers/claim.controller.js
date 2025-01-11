@@ -11,7 +11,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 export const submitClaim = asyncHandler(async (req, res) => {
   const { name, email, claimAmount, description, document } = req.body;
 
-  // Validate required fields
+  
   if (!name || name.trim() === "") {
     return res.status(400).json({ message: "Patient name is required." });
   }
@@ -23,13 +23,13 @@ export const submitClaim = asyncHandler(async (req, res) => {
   }
 
   try {
-    // Create a claim record in the database
+    
     const claim = await Claim.create({
       name,
       email,
       claimAmount,
       description,
-      documentUrl: document, // Save the document URL directly
+      documentUrl: document, 
       ownerId: req.user._id,
     });
 
@@ -44,41 +44,41 @@ export const submitClaim = asyncHandler(async (req, res) => {
   }
 });
 
-// ! Upload 1
-// export const submitClaim = async (req, res) => {
-//   const { name, email, claimAmount, description, documentUrl } = req.body;
 
-//   try {
-//     // Create a new claim
-//     const newClaim = await Claim.create({
-//       name,
-//       email,
-//       claimAmount,
-//       description,
-//       documentUrl,
-//     });
 
-//     return res.status(201).json({
-//       message: "Claim submitted successfully.",
-//       claim: newClaim,
-//     });
-//   } catch (error) {
-//     return res
-//       .status(500)
-//       .json({ message: "Error submitting claim.", error: error.message });
-//   }
-// };
 
-// /**
-//  * @desc Get all claims (for insurers)
-//  * @route GET /api/claims
-//  * @access Private (Insurer Only)
-//  */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const getAllClaims = async (req, res) => {
   const { status, startDate, endDate, minAmount, maxAmount } = req.query;
 
   try {
-    // Build the query dynamically
+    
     const query = {};
 
     if (status) query.status = status;
@@ -89,10 +89,10 @@ export const getAllClaims = async (req, res) => {
     if (minAmount) query.claimAmount.$gte = Number(minAmount);
     if (maxAmount) query.claimAmount.$lte = Number(maxAmount);
 
-    // Fetch claims based on the query, sorted by updatedAt
+    
     const claims = await Claim.find(query)
       .populate("insurerId", "name email")
-      .sort({ updatedAt: -1 }); // Sort by updatedAt in descending order
+      .sort({ updatedAt: -1 }); 
 
     return res.status(200).json({ claims });
   } catch (error) {
@@ -142,7 +142,7 @@ export const updateClaim = async (req, res) => {
       return res.status(404).json({ message: "Claim not found." });
     }
 
-    // Update claim details
+    
     if (status) claim.status = status;
     if (approvedAmount !== undefined) claim.approvedAmount = approvedAmount;
     if (insurerComments) claim.insurerComments = insurerComments;
@@ -168,10 +168,8 @@ export const updateClaim = async (req, res) => {
  */
 export const getPatientClaims = async (req, res) => {
   try {
-    // Ensure user is authenticated and retrieve user data from the token
+    
     const user = await User.findById(req.user._id);
-
-    console.log(`\n ~ getPatientClaims ~ req.user :- `, req.user);
 
     if (!user) {
       return res.status(400).json({
@@ -179,26 +177,26 @@ export const getPatientClaims = async (req, res) => {
       });
     }
 
-    // Extract filters from query parameters
+    
     const { status, startDate, endDate, minAmount, maxAmount } = req.query;
 
-    // Build the query object dynamically
-    const query = { ownerId: req.user._id }; // Filter claims by user id (ownerId)
+    
+    const query = { ownerId: req.user._id }; 
 
-    if (status) query.status = status; // Filter by claim status
+    if (status) query.status = status; 
 
-    if (startDate || endDate) query.submissionDate = {}; // Initialize submissionDate filter
-    if (startDate) query.submissionDate.$gte = new Date(startDate); // Filter by start date
-    if (endDate) query.submissionDate.$lte = new Date(endDate); // Filter by end date
+    if (startDate || endDate) query.submissionDate = {}; 
+    if (startDate) query.submissionDate.$gte = new Date(startDate); 
+    if (endDate) query.submissionDate.$lte = new Date(endDate); 
 
-    if (minAmount || maxAmount) query.claimAmount = {}; // Initialize claimAmount filter
-    if (minAmount) query.claimAmount.$gte = Number(minAmount); // Filter by minimum amount
-    if (maxAmount) query.claimAmount.$lte = Number(maxAmount); // Filter by maximum amount
+    if (minAmount || maxAmount) query.claimAmount = {}; 
+    if (minAmount) query.claimAmount.$gte = Number(minAmount); 
+    if (maxAmount) query.claimAmount.$lte = Number(maxAmount); 
 
-    console.log(`\n ~ getPatientClaims ~ query :- `, query);
-
-    // Fetch claims based on the query
-    const claims = await Claim.find(query).sort({ updatedAt: -1 });
+    
+    const claims = await Claim.find(query)
+      .populate("insurerId", "name email")
+      .sort({ updatedAt: -1 });
 
     return res.status(200).json({ claims });
   } catch (error) {
@@ -217,9 +215,9 @@ export const getPatientClaims = async (req, res) => {
  */
 export const deleteDocument = async (req, res, next) => {
   try {
-    const { publicId } = req.body; // Expect publicId in the request body
+    const { publicId } = req.body; 
 
-    // Validate input
+    
     if (!publicId) {
       return res.status(400).json({
         success: false,
@@ -227,7 +225,7 @@ export const deleteDocument = async (req, res, next) => {
       });
     }
 
-    // Call the Cloudinary utility to delete the document
+    
     const response = await deleteFromCloudinary(publicId);
 
     if (response?.result === "ok") {
@@ -237,7 +235,7 @@ export const deleteDocument = async (req, res, next) => {
       });
     }
 
-    // Handle cases where deletion fails
+    
     return res.status(500).json({
       success: false,
       message: "Failed to delete the document",

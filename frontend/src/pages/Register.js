@@ -4,6 +4,7 @@ import claimApi from "../api/claimApi.js";
 import { useSession } from "../context/session.js";
 import { Link, useNavigate } from "react-router-dom";
 import image from "../assets/register_image.png";
+import React from "react";
 
 // Layout configuration for Ant Design form
 const formItemLayout = {
@@ -34,7 +35,7 @@ const MainContainer = styled.div`
 `;
 
 const CardContainer = styled.div`
-transform: scale(1.1);
+  transform: scale(1.1);
   display: flex;
   flex-direction: row; // Align image and form side-by-side
   background: #ffffff;
@@ -87,6 +88,7 @@ const ImageContainer = styled.div`
 
 const Register = () => {
   const [api, contextHolder] = notification.useNotification();
+  const [loading, setLoading] = React.useState(false);
 
   const navigate = useNavigate(); // Hook to handle navigation
   const { sendToContext } = useSession(); // Get session context function
@@ -95,12 +97,14 @@ const Register = () => {
   const onFinish = async (values) => {
     try {
       // Attempt to register the user
+      setLoading(true);
       const response = await claimApi.registerUser(values);
 
       // Store relevant data in context (if needed)
       sendToContext(response);
 
       // Redirect to dashboard after successful registration
+      setLoading(false);
       navigate("/dashboard");
 
       // Handle successful registration
@@ -180,7 +184,12 @@ const Register = () => {
 
             {/* Submit button */}
             <Form.Item>
-              <Button type="primary" htmlType="submit" style={{ marginLeft: "220px" }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ marginLeft: "220px" }}
+                loading={loading}
+              >
                 Submit
               </Button>
             </Form.Item>
