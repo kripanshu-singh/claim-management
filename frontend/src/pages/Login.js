@@ -5,75 +5,12 @@ import claimApi from "../api/claimApi.js";
 import { useSession } from "../context/session.js";
 import { Link, useNavigate } from "react-router-dom";
 import image from "../assets/signin_image.png";
-// const MainContainer = styled.div`
-//   // display: flex;
-//   // height: calc(100dvh - 134px);
-
-//   // width: -webkit-fill-available;
-//   // display: flex;
-//   // height: calc(100dvh - 134px);
-//   // justify-content: center;
-//   // flex-direction: column;
-//   // padding: 40px;
-
-//   margin: auto;
-//   width: fit-content;
-//   display: flex;
-//   height: calc(100dvh - 134px);
-//   justify-content: center;
-//   flex-direction: column;
-//   padding: 40px;
-// `;
-// const StyledContainer = styled.div`
-//   // display: flex;
-//   // justify-content: center;
-//   // align-items: center;
-//   // height: 80dvh;
-//   .card_shadow {
-//     width: 400px;
-//     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-//     transition: 0.3s;
-//     border-radius: 5px; /* 5px rounded corners */
-//     padding: 20px;
-//   }
-// `;
-
-// import styled from "styled-components";
-
-// const MainContainer = styled.div`
-//   margin: auto;
-//   width: fit-content;
-//   display: flex;
-//   height: calc(100dvh - 134px);
-//   justify-content: center;
-//   align-items: center; /* Center align the content vertically */
-//   flex-direction: column;
-//   padding: 40px;
-// `;
-
-// const CardShadow = styled.div`
-//   background-color: #ffffff; /* Add a white background */
-//   border-radius: 8px; /* Slightly rounded corners */
-//   padding: 20px;
-//   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(0, 0, 0, 0.06); /* Subtle shadow for depth */
-//   max-width: 400px; /* Limit card width */
-//   width: 100%; /* Ensure responsiveness */
-//   text-align: center; /* Center text alignment for the card */
-// `;
-
-// const StyledButton = styled(Button)`
-//   background-color: red;
-//   &:hover {
-//     background-color: blue;
-//   }
-// `;
 
 const MainContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 134px); // Use min-height for better responsiveness
-  padding: 40px;
+  height: calc(100vh - 134px); // Use min-height for better responsiveness
   background-color: #f0f2f5; // Light background color like in the image
   font-family: "Poppins", sans-serif; // Apply Poppins font
 `;

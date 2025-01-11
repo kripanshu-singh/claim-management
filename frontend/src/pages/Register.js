@@ -24,25 +24,12 @@ const tailFormItemLayout = {
   },
 };
 
-// Styled container for centering the form
-// const StyledContainer = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   height: 80dvh; // Full height for better vertical centering
-
-//   .emailLabel {
-//     justify-content: left;
-//   }
-// `;
-
 const MainContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 134px);
+  height: calc(100vh - 134px);
   background-color: #f0f2f5; // Light background color
-  padding: 40px;
   font-family: "Poppins", sans-serif; // Apply Poppins font globally
 `;
 
