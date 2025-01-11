@@ -93,10 +93,10 @@ export const getAllClaims = async (req, res) => {
     if (minAmount) query.claimAmount.$gte = Number(minAmount);
     if (maxAmount) query.claimAmount.$lte = Number(maxAmount);
 
-    // Fetch claims based on the query
+    // Fetch claims based on the query, sorted by updatedAt
     const claims = await Claim.find(query)
       .populate("insurerId", "name email")
-      .sort({ submissionDate: -1 }); // Sort by submissionDate in descending order
+      .sort({ updatedAt: -1 }); // Sort by updatedAt in descending order
 
     return res.status(200).json({ claims });
   } catch (error) {
@@ -202,7 +202,7 @@ export const getPatientClaims = async (req, res) => {
     console.log(`\n ~ getPatientClaims ~ query :- `, query);
 
     // Fetch claims based on the query
-    const claims = await Claim.find(query);
+    const claims = await Claim.find(query).sort({ updatedAt: -1 });
 
     return res.status(200).json({ claims });
   } catch (error) {
