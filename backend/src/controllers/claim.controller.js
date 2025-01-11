@@ -247,3 +247,10 @@ export const deleteDocument = async (req, res, next) => {
     next(new ApiError("An error occurred while deleting the document", 500));
   }
 };
+
+export const healthCheck = (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Your server is healthy",
+  });
+};

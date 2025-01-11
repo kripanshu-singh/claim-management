@@ -6,6 +6,7 @@ import {
   updateClaim,
   getPatientClaims,
   deleteDocument,
+  healthCheck,
 } from "../controllers/claim.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { protect, authorize } from "../middlewares/auth.middleware.js";
@@ -48,5 +49,7 @@ router.get("/:claimId", protect, getClaimById);
 router.put("/:claimId", protect, authorize("insurer"), updateClaim);
 
 router.delete("/", deleteDocument);
+
+router.get("/health", healthCheck);
 
 export default router;
