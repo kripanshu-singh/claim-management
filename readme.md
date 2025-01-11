@@ -89,15 +89,15 @@ The **Claim App** is a web application designed to simplify and streamline claim
 
 ### Patient Dashboard
 
-![Patient Dashboard Screenshot](./screenshots/patient_dashboard.png)
+![Patient Dashboard Screenshot](./assets/patientDashboard.png)
 
 ### Claim Submission Form
 
-![Claim Submission Screenshot](./screenshots/patient_raise_claim.png)
+![Claim Submission Screenshot](./assets/raise_claim.png)
 
 ### Insurer Dashboard
 
-![Insurer Dashboard Screenshot](./screenshots/insurer_dashboard.png)
+![Insurer Dashboard Screenshot](./assets/insurer_dash.png)
 
 ---
 
