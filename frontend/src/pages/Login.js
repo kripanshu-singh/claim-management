@@ -13,9 +13,10 @@ const MainContainer = styled.div`
   height: calc(100vh - 134px); // Use min-height for better responsiveness
   background-color: #f0f2f5; // Light background color like in the image
   font-family: "Poppins", sans-serif; // Apply Poppins font
-`;
+  `;
 
 const CardContainer = styled.div`
+transform: scale(1.1);
   background-color: white;
   padding: 32px;
   border-radius: 8px;

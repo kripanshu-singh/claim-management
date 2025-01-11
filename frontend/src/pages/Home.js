@@ -1,25 +1,30 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "../context/session.js";
+import { Spin } from 'antd';
+import styled from "styled-components";
+
+const StyledSpin = styled(Spin)`
+  height: calc( 100dvh - 134px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const Home = () => {
-  const { userObject, accessToken } = useSession();
+  const { accessToken } = useSession();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect based on the presence of accessToken
     if (accessToken) {
-      navigate("/dashboard"); // Redirect to the dashboard if accessToken exists
+      navigate("/dashboard");
     } else {
-      navigate("/login"); // Redirect to login if accessToken doesn't exist
+      navigate("/login");
     }
   }, [accessToken, navigate]);
 
   return (
-    <div>
-      {/* <h1>Hello {userObject?.name}</h1>
-      <h2>You are a {userObject?.role}</h2> */}
-    </div>
+    <StyledSpin spinning size="large" />
   );
 };
 

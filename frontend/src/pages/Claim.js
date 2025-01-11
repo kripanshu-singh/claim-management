@@ -1,34 +1,49 @@
 import React, { useState } from "react";
-import { Button, Input, InputNumber, message, notification } from "antd";
+import { Button, Input, InputNumber, message, notification, Form } from "antd";
 import styled from "styled-components";
 import claimApi from "../api/claimApi.js";
-import { useSession } from "../context/session.js";
 import { useNavigate } from "react-router-dom";
 import UploadDocument from "../components/UploadDocument.js";
-
-const { TextArea } = Input;
 
 const StyledContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: calc( 100dvh - 134px);
-  .claim-form{
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 70%;
-  }
   .ant-upload-wrapper{
     align-self: center;
   }
 `;
 
+const StyledCard = styled.div`
+  border: 1px solid #a7a7a7;
+  border-radius: 8px;
+  padding: 20px;
+  height: calc(100% - 82px);
+  width: 70%;
+ .ant-card-head{
+  border-bottom: 1px solid #acacac;
+  padding-bottom: 20px;
+ }
+ .ant-card-body{
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  height: calc(100% - 55px);
+  overflow: auto;
+ }
+ .claim-form{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+ }
+`;
+
 const Claim = () => {
   const [api, contextHolder] = notification.useNotification();
-
   const navigate = useNavigate();
-  const { sendToContext } = useSession();
+  const [form] = Form.useForm();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -37,19 +52,7 @@ const Claim = () => {
   const [document, setDocument] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const enableSubmit = () => {
-    return name && email && claimAmount && description && document;
-  };
-
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    setDocument(file);
-  };
-
-  const submitClaim = async (e) => {
-    e.preventDefault();
+  const submitClaim = async () => {
     setLoading(true);
 
     if (!document) {
@@ -58,15 +61,16 @@ const Claim = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("claimAmount", claimAmount);
-    formData.append("description", description);
-    formData.append("document", document);
+    const payload = {
+      name,
+      email,
+      claimAmount,
+      description,
+      document
+    };
 
     try {
-      const response = await claimApi.submitClaim(formData);
+      const response = await claimApi.submitClaim(payload);
       api.success({
         message: "Logedin successful",
         description: response?.message || "You successfully logedin.", // Error message from backend
@@ -84,52 +88,139 @@ const Claim = () => {
       setLoading(false);
     }
   };
+  const handleDocumentChange = (url) => {
+    form.setFieldsValue({ document: url });
+    setDocument(url);
+  };
 
   return (
     <StyledContainer>
       {contextHolder}
-      <form className="form claim-form" onSubmit={submitClaim}>
-        <h2>Submit Claim</h2>
-        <Input
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        // required
-        />
-        <Input
-          placeholder="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        // required
-        />
-        <InputNumber
-          placeholder="Claim Amount"
-          value={claimAmount}
-          type="number"
-          onChange={(value) => setClaimAmount(value)}
-          required
-          style={{ width: "100%" }}
-        />
-        <TextArea
-          rows={4}
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-        />
-        <UploadDocument setDocument={setDocument} />
+      <StyledCard>
+        <div className="ant-card-head">
+          <span style={{ fontWeight: "400", fontSize: "20px", color: "#000" }}>
+            Submit Claim
+          </span>
+        </div>
+        <div className="ant-card-body">
+          <Form
+            className="claim-form"
+            name="basic"
+            labelCol={{
+              span: 8,
+            }}
+            onFinish={submitClaim}
+            form={form}
+            style={{ marginLeft: "-250px" }}
+          >
 
-        <Button
-          type="primary"
-          htmlType="submit"
-          loading={loading}
-          style={{ marginTop: "1rem" }}
-          disabled={!enableSubmit()}
-        >
-          Submit Claim
-        </Button>
-      </form>
+            <Form.Item
+              label="Username"
+              name="username"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your username!',
+                },
+              ]}
+            >
+              <Input placeholder="Name" id="error"
+                onChange={(e) => setName(e.target.value)}
+                value={name}
+              />
+            </Form.Item>
+
+            <Form.Item
+              name={['user', 'email']}
+              label="Email"
+              rules={[
+                {
+                  type: 'email',
+                  required: true,
+                  message: 'Please input your email!',
+                },
+              ]}
+            >
+              <Input
+                placeholder="Email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Form.Item>
+
+            <Form.Item
+              name={['claimAmount']}
+              label="Claim Amount"
+              rules={[
+                {
+                  type: 'number',
+                  required: true,
+                  message: 'Please input your Claim Amount!',
+                },
+              ]}
+            >
+              <InputNumber
+                placeholder="Claim Amount"
+                value={claimAmount}
+                type="number"
+                onChange={(value) => setClaimAmount(value)}
+                required
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
+
+            <Form.Item
+              name={['user', 'introduction']}
+              label="Description"
+              rules={[{ required: true, message: 'Please input your description!', }]}
+            >
+              <Input.TextArea
+                rows={4}
+                placeholder="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="document"
+              label="Upload"
+              rules={[{
+                required: true,
+                message: 'Please upload relevant document!',
+              },
+              ]}
+              valuePropName="document"
+            >
+              <UploadDocument setDocument={handleDocumentChange} />
+            </Form.Item>
+
+            <Form.Item
+              wrapperCol={{
+                offset: 6,
+                span: 16,
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginLeft: "15%"
+              }}
+            >
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                style={{ marginTop: "1rem" }}
+              >
+                Submit Claim
+              </Button>
+            </Form.Item>
+
+          </Form>
+        </div>
+      </StyledCard>
     </StyledContainer>
   );
 };

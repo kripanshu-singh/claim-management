@@ -28,3 +28,5 @@ export const projectStatus = [
         iconName: 'pause_circle',
     },
 ];
+
+export const logoPath = ['/', '/dashboard', '/login', '/register']

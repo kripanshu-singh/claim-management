@@ -1,23 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {
-  ArrowRightOutlined,
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
-import { Avatar, Card, message } from "antd";
+import { message } from "antd";
 import styled from "styled-components";
 import TableListing from "./TableListing.js";
 import { useSession } from "../context/session.js";
 import { useNavigate } from "react-router-dom";
 import claimApi from "../api/claimApi.js";
 import Filters from "../components/Filters/index.js";
-import TableSkeleton from "./TableSkeleton.js";
+import Spinner from "./Spinner.js";
 import StatusCard from "./StatusCard/index.js";
 import { getTaskSummary } from "./helper.js";
 import Welcome from "./Welcome.js";
-
-const { Meta } = Card;
 
 const StyledContainer = styled.div`
 display: flex;
@@ -105,31 +97,28 @@ const InsurerDashboard = () => {
   useEffect(() => {
     fetchClaims();
   }, []);
+
+  if (!claims) {
+    return <Spinner />
+  }
+
   return (
     <StyledContainer>
-      {!claims && (
-        <div>
-          <TableSkeleton />
-          {/* Loading... */}
+      <StyledDashboardContainer>
+        <div className="dateContainer">
+          <Welcome name={userObject?.name} />
+          <StatusCard taskDetailData={getTaskSummary(listData)} />
         </div>
-      )}
-      {claims && (
-        <StyledDashboardContainer>
-          <div className="dateContainer">
-            <Welcome name={userObject?.name} />
-            <StatusCard taskDetailData={getTaskSummary(listData)} />
-          </div>
-          <div className="tableContainer">
-            <Filters
-              setClaims={setClaims}
-              open={open}
-              setOpen={setOpen}
-              listData={listData}
-            />
-            <TableListing dataSource={[...claims]} />
-          </div>
-        </StyledDashboardContainer>
-      )}
+        <div className="tableContainer">
+          <Filters
+            setClaims={setClaims}
+            open={open}
+            setOpen={setOpen}
+            listData={listData}
+          />
+          <TableListing dataSource={[...claims]} />
+        </div>
+      </StyledDashboardContainer>
     </StyledContainer>
   );
 };

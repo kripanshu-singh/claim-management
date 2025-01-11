@@ -34,6 +34,7 @@ const MainContainer = styled.div`
 `;
 
 const CardContainer = styled.div`
+transform: scale(1.1);
   display: flex;
   flex-direction: row; // Align image and form side-by-side
   background: #ffffff;
@@ -179,7 +180,7 @@ const Register = () => {
 
             {/* Submit button */}
             <Form.Item>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" style={{ marginLeft: "220px" }}>
                 Submit
               </Button>
             </Form.Item>

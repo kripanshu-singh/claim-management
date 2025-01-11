@@ -2,7 +2,6 @@ import React from "react";
 import { Table, Tag } from "antd";
 import { Link } from "react-router-dom"; // Import Link
 import InsurerProfile from "../components/InsurerProfile.js";
-import TableSkeleton from "./TableSkeleton.js";
 import styled from "styled-components";
 
 const StyledTable = styled(Table)`
@@ -21,14 +20,16 @@ const columns = [
     ) => <Link to={`/claims/${record._id}`}>{text}</Link>,
   },
   {
-    title: "Claimed Amount (₹)",
+    title: "Claimed Amount",
     dataIndex: "claimAmount",
     key: "_id",
+    render: ((amount) => <span style={{ justifyContent: "center", display: "flex" }}>₹{amount}</span>),
   },
   {
-    title: "Approved Amount (₹)",
+    title: "Approved Amount",
     dataIndex: "approvedAmount",
     key: "_id",
+    render: ((amount) => <span style={{ justifyContent: "center", display: "flex" }}>₹{amount}</span>),
   },
   {
     title: "Status",
@@ -73,10 +74,7 @@ const TableListing = ({ dataSource }) => {
 
   if (!dataSource) {
     return (
-      <div>
-        {/* <TableSkeleton /> */}
-        Loading...
-      </div>
+      <div style={{ height: "calc( 100% - 75px)" }} />
     );
   }
 

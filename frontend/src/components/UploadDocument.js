@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Image, Upload, message } from 'antd';
-import qs from 'qs';
+import claimApi from '../api/claimApi.js';
 
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -11,14 +11,16 @@ const getBase64 = (file) =>
         reader.onerror = (error) => reject(error);
     });
 
-
 const PDFJS = window.pdfjsLib;
 
 
-const UploadDocument = ({setDocument}) => {
+const UploadDocument = ({ setDocument }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
+    const [publicId, setPublicId] = useState('');
     const [fileList, setFileList] = useState([]);
+    const cloudName = process.env.REACT_APP_CLOUD_NAME;
+    const folderName = process.env.REACT_APP_FOLDER_NAME;
 
     const handlePreview = async (file) => {
         if (!file.url && !file.preview) {
@@ -31,15 +33,10 @@ const UploadDocument = ({setDocument}) => {
     const handleChange = ({ fileList: newFileList }) => {
         let updatedList = newFileList;
         if (!!updatedList[0]?.response) {
-            updatedList[0].thumbUrl = updatedList[0]?.response?.data?.url;
-            updatedList[0].preview = updatedList[0]?.response?.data?.url;
+            updatedList[0].thumbUrl = updatedList[0]?.response?.url;
+            updatedList[0].preview = updatedList[0]?.response?.url;
         };
         setFileList(updatedList);
-    };
-
-    const createDocDownloadUrl = () => {
-        const queryParams = { expiration: 600, key: '5783dbbad630be0dec059ad7f03bbe43' };
-        return `https://api.imgbb.com/1/upload?${qs.stringify(queryParams)}`;
     };
 
     const processPdfToImage = async (file) => {
@@ -74,7 +71,6 @@ const UploadDocument = ({setDocument}) => {
     const handleCustomRequest = async ({ file, onSuccess, onError }) => {
         try {
             let uploadFile = file;
-
             // Check if the uploaded file is a PDF
             if (file.type === 'application/pdf') {
                 message.info('Converting PDF to image...');
@@ -84,26 +80,30 @@ const UploadDocument = ({setDocument}) => {
 
             // Create FormData and upload the file
             const formData = new FormData();
-            formData.append('image', uploadFile);
+            formData.append('file', uploadFile);
+            formData.append('file', uploadFile);
+            formData.append('upload_preset', 'claim_management');
+            formData.append('cloud_name', cloudName);
+            formData.append('folder', folderName);
 
-            const response = await fetch(createDocDownloadUrl(), {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                setPreviewImage(result.data.url);
-                setDocument(result.data.url);
-                onSuccess(result);
-                message.success('File uploaded successfully.');
-            } else {
-                throw new Error('Upload failed');
-            }
+            const response = await claimApi.uploadDocument(formData, cloudName);
+            setPreviewImage(response.url);
+            setDocument(response.url);
+            setPublicId(response.public_id);
+            onSuccess(response);
         } catch (error) {
             console.error('Upload error:', error);
             onError(error);
             message.error(error.message || 'Failed to upload file.');
+        }
+    };
+
+    const handleRemove = async (file) => {
+        try {
+            await claimApi.deleteDocument(publicId);
+            message.success(`File ${file.name} removed successfully`);
+        } catch (error) {
+            message.error('Failed to remove file');
         }
     };
 
@@ -134,6 +134,7 @@ const UploadDocument = ({setDocument}) => {
                 fileList={fileList}
                 onPreview={handlePreview}
                 onChange={handleChange}
+                onRemove={handleRemove}
             >
                 {fileList.length >= 1 ? null : uploadButton}
             </Upload>

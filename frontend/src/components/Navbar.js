@@ -1,10 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ReactComponent as LogoSvg } from "../assets/logo.svg";
 import { useSession } from "../context/session.js";
 import { Button } from "antd";
 import claimApi from "../api/claimApi.js";
+import back from "../assets/back.svg";
+import { logoPath } from "./constant.js";
 
 const StyledContainer = styled.div`
   height: 66px;
@@ -20,13 +22,16 @@ const StyledLogo = styled(LogoSvg)`
 `;
 
 const InnerContainer = styled.div`
-  width: 90%;
+  width: 97%;
   font-size: 0.9rem;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-
+  .navbar-first{
+    padding-left: 12px;
+    width: 130px;
+  }
   .logoandname {
     display: flex;
     align-items: center;
@@ -35,6 +40,16 @@ const InnerContainer = styled.div`
   .auth-buttons {
     display: flex;
     gap: 16px;
+  }
+  .back-button{
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .back-text{
+    font-size: 18px;
   }
 `;
 
@@ -60,17 +75,11 @@ const Menu = styled.ul`
 `;
 
 const Navbar = () => {
-  const navigate = useNavigate(); // Use the useNavigate hook for redirection
+  const navigate = useNavigate();
+  const location = useLocation();
   const { userLogOut, accessToken } = useSession();
   const handleLogout = async () => {
-    const response = await claimApi.logoutuser();
     await userLogOut(); // Perform session cleanup
-    navigate("/login"); // Redirect to login page
-  };
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
   };
 
   const menuItems = [
@@ -82,15 +91,21 @@ const Navbar = () => {
   return (
     <StyledContainer>
       <InnerContainer>
-        <Link to="/" className="logoandname">
-          {/* <span> */}
-          <LogoSvg style={{ width: "50px", height: "auto" }} />
-          {/* </span> */}
-          <span style={{ fontWeight: "bold", marginLeft: "4px" }}>
-            Claim App
-          </span>
-        </Link>
-
+        <div className="navbar-first">
+          {logoPath.includes(location.pathname) ? (
+            <Link to="/" className="logoandname">
+              <LogoSvg style={{ width: "46px", height: "auto" }} />
+              <span style={{ fontWeight: "bold" }}>
+                Claim App
+              </span>
+            </Link>
+          ) : (
+            <div className="back-button" onClick={() => navigate(-1)}>
+              <img src={back} style={{ width: "40px", height: "auto" }} />
+              <span className="back-text">Back</span>
+            </div>
+          )}
+        </div>
         <Menu>
           {menuItems.map((item) => (
             <li key={item.name}>

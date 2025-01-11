@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, Card, message, Tag, Image } from "antd";
+import { message, Tag, Image } from "antd";
 import claimApi from "../api/claimApi.js";
 import { useSession } from "../context/session.js"; // Assuming user role is stored in session
 import { Input } from "antd";
-import { InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
-import { Tooltip } from "antd";
 import ClaimActions from "../utils/UpdateClaim.js";
 import styled from "styled-components";
+import Spinner from "../components/Spinner.js";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -28,22 +27,17 @@ const StyledCard = styled.div`
  }
  .ant-card-body{
   display: flex;
+  justify-content: space-around;
   flex-direction: column;
   height: calc(100% - 55px);
   overflow: auto;
  }
- .all-p-tag{
-  /* margin: 4px; */
- }
 `;
 
-const { TextArea } = Input;
 const SingleClaim = () => {
   const { id } = useParams();
   const { userObject } = useSession(); // Get user data from context/session
-
   const [claim, setClaim] = useState(null);
-  const [previewError, setPreviewError] = useState(false);
 
   // Function to format the date
   const formatDate = (dateString) => {
@@ -82,20 +76,6 @@ const SingleClaim = () => {
     fetchClaimById();
   }, [id]);
 
-  if (!claim) {
-    return <div>Loading...</div>;
-  }
-
-  const handlePreviewError = (e) => {
-    console.error("Error previewing document:", e);
-    setPreviewError(true);
-  };
-
-  const getFileType = (url) => {
-    const extension = url.split(".").pop();
-    return extension.toLowerCase();
-  };
-
   const getStatusTag = (status) => {
     const color =
       status === "pending"
@@ -107,8 +87,13 @@ const SingleClaim = () => {
   };
 
   // Check if userObject is "insurer" and claim status is "pending"
+  if (!claim) {
+    return (<Spinner />);
+  }
+
   const isInsurerAndPending =
-    userObject?.role === "insurer" && claim.status === "pending";
+    userObject?.role === "insurer" && claim?.status === "pending";
+
 
   return (
     <StyledContainer>

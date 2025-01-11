@@ -2,6 +2,7 @@ import PropType from "prop-types";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import js_cookie from "js-cookie";
 import claimApi from "../api/claimApi.js";
+import { useNavigate } from "react-router-dom";
 
 const SessionContext = createContext();
 
@@ -18,6 +19,7 @@ function useSession() {
 function SessionProvider({ children }) {
   const [accessToken, setAccessToken] = useState(null);
   const [userObject, setUserObject] = useState(null);
+  const navigate = useNavigate();
 
   const getUserFormToken = async () => {
     try {
@@ -26,13 +28,11 @@ function SessionProvider({ children }) {
       setUserObject(response);
     } catch (error) {
       // Handle errors
-      console.error(`\n ~ getUserFormToken ~ error :- `, error.message);
       throw error; // Re-throw the error if further handling is required
     }
   };
 
   useEffect(() => {
-    console.log("first");
     const accessToken = js_cookie.get("accessToken") || null;
 
     setAccessToken(accessToken);
@@ -41,11 +41,13 @@ function SessionProvider({ children }) {
     }
   }, []);
 
-  const userLogOut = () => {
+  const userLogOut = async () => {
+    await claimApi.logoutuser();
     setAccessToken(null);
     setUserObject(null);
     js_cookie.remove("accessToken");
     js_cookie.remove("refreshToken");
+    navigate("/login"); // Redirect to login page
   };
 
   const sendToContext = (response) => {

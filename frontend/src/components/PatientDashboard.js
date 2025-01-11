@@ -12,7 +12,7 @@ import { useSession } from "../context/session.js";
 import { useNavigate } from "react-router-dom";
 import claimApi from "../api/claimApi.js";
 import Filters from "../components/Filters/index.js";
-import TableSkeleton from "./TableSkeleton.js";
+import Spinner from "./Spinner.js";
 import ProjectStatus from "./ProjectStatus.js";
 import { getTaskSummary } from "./helper.js";
 import Welcome from "./Welcome.js";
@@ -104,31 +104,28 @@ const PatientDashboard = () => {
   useEffect(() => {
     fetchClaims();
   }, []);
+
+  if (!claims) {
+    return <Spinner />
+  }
+
   return (
     <StyledContainer>
-      {!claims && (
-        <div>
-          <TableSkeleton />
-          {/* Loading... */}
+      <StyledDashboardContainer>
+        <div className="dateContainer">
+          <Welcome name={userObject?.name} />
+          <ProjectStatus taskDetailData={getTaskSummary(listData)} />
         </div>
-      )}
-      {claims && (
-        <StyledDashboardContainer>
-          <div className="dateContainer">
-            <Welcome name={userObject?.name} />
-            <ProjectStatus taskDetailData={getTaskSummary(listData)} />
-          </div>
-          <div className="tableContainer">
-            <Filters
-              setClaims={setClaims}
-              open={open}
-              setOpen={setOpen}
-              listData={listData}
-            />
-            <TableListing dataSource={[...claims]} />
-          </div>
-        </StyledDashboardContainer>
-      )}
+        <div className="tableContainer">
+          <Filters
+            setClaims={setClaims}
+            open={open}
+            setOpen={setOpen}
+            listData={listData}
+          />
+          <TableListing dataSource={[...claims]} />
+        </div>
+      </StyledDashboardContainer>
     </StyledContainer>
   );
 };

@@ -20,7 +20,6 @@
     "less-loader": "^12.2.0",
     "pdf-image": "2.0.0",
     "pdfjs-dist": "2.6.347",
-    "qs": "^6.11.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-pdf-to-image": "1.0.2",

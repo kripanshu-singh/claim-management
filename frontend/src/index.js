@@ -41,14 +41,6 @@ const router = createBrowserRouter([
         path: "/login",
         element: <Login />,
       },
-      // {
-      //   path: "/profile",
-      //   element: <UserProfile />,
-      // },
-      // {
-      //   path: "/authors",
-      //   element: <Authors />,
-      // },
       {
         path: "/raise_claim",
         element: <Claim />,
@@ -57,44 +49,15 @@ const router = createBrowserRouter([
         path: "/dashboard",
         element: <Dashboard />,
       },
-      // {
-      //   path: "/raise_claim",
-      //   element: <Claim />,
-      // },
-      // {
-      //   path: "/post/categories/:category",
-      //   element: <CategoryPost />,
-      // },
       {
         path: "/claims/:id",
         element: <SingleClaim />,
       },
-      // {
-      //   path: "/myposts/:id",
-      //   element: <DashBoard />,
-      // },
-      // {
-      //   path: "/post/:id/edit",
-      //   element: <EditPost />,
-      // },
-      // {
-      //   path: "/post/:id/delete",
-      //   element: <DeletePost />,
-      // },
-      // {
-      //   path: "/logout",
-      //   element: <Logout />,
-      // },
     ],
   },
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-    <RouterProvider router={router} />
+  <RouterProvider router={router} />
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();

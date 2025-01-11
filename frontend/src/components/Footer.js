@@ -17,6 +17,7 @@ const StyledFooter = styled.div`
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
+    height: 100%;
   }
 
   .p-8 {

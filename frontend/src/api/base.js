@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 
 export function createApiCommunicator() {
   const instance = axios.create({
-    baseURL: "http://192.168.29.122:1000/api",
+    baseURL: process.env.REACT_APP_BASE_URL,
     timeout: 180000,
     headers: {
       "Content-Type": "application/json",
