@@ -5,8 +5,8 @@ import InsurerProfile from "../components/InsurerProfile.js";
 import styled from "styled-components";
 
 const StyledTable = styled(Table)`
-  height: calc( 100% - 75px) !important;
-  overflow: auto !important;  
+  height: calc(100% - 75px) !important;
+  overflow: auto !important;
 `;
 
 const columns = [
@@ -17,19 +17,37 @@ const columns = [
     render: (
       text,
       record, // Access the record
-    ) => <Link to={`/claims/${record._id}`}>{text}</Link>,
+    ) => (
+      <div
+        style={{
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
+        <Link to={`/claims/${record._id}`}>{text}</Link>
+      </div>
+    ),
   },
   {
     title: "Claimed Amount",
     dataIndex: "claimAmount",
     key: "_id",
-    render: ((amount) => <span style={{ justifyContent: "center", display: "flex" }}>₹{amount}</span>),
+    render: (amount) => (
+      <span style={{ justifyContent: "center", display: "flex" }}>
+        ₹{amount}
+      </span>
+    ),
   },
   {
     title: "Approved Amount",
     dataIndex: "approvedAmount",
     key: "_id",
-    render: ((amount) => <span style={{ justifyContent: "center", display: "flex" }}>₹{amount}</span>),
+    render: (amount) => (
+      <span style={{ justifyContent: "center", display: "flex" }}>
+        ₹{amount}
+      </span>
+    ),
   },
   {
     title: "Status",
@@ -40,8 +58,8 @@ const columns = [
         status === "pending"
           ? "geekblue"
           : status === "rejected"
-            ? "volcano"
-            : "green";
+          ? "volcano"
+          : "green";
       return <Tag color={color}>{status.toUpperCase()}</Tag>;
     },
   },
@@ -71,11 +89,8 @@ const columns = [
 ];
 
 const TableListing = ({ dataSource }) => {
-
   if (!dataSource) {
-    return (
-      <div style={{ height: "calc( 100% - 75px)" }} />
-    );
+    return <div style={{ height: "calc( 100% - 75px)" }} />;
   }
 
   return (
