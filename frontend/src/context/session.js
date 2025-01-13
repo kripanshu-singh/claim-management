@@ -34,19 +34,24 @@ function SessionProvider({ children }) {
 
   useEffect(() => {
     const accessToken = js_cookie.get("accessToken") || null;
-
     setAccessToken(accessToken);
     if (!userObject && accessToken) {
       getUserFormToken();
     }
+    document.addEventListener("UNAUTHORIZED_401", (e) => userLogOut(true));
+    return () => {
+      document.removeEventListener("UNAUTHORIZED_401", (e) => userLogOut(true));
+    };
   }, []);
 
-  const userLogOut = async () => {
-    await claimApi.logoutuser();
-    setAccessToken(null);
-    setUserObject(null);
-    js_cookie.remove("accessToken");
-    js_cookie.remove("refreshToken");
+  const userLogOut = async (redirectOnly = false) => {
+    if (!redirectOnly) {
+      await claimApi.logoutuser();
+      setAccessToken(null);
+      setUserObject(null);
+      js_cookie.remove("accessToken");
+      js_cookie.remove("refreshToken");
+    }
     navigate("/login"); // Redirect to login page
   };
 

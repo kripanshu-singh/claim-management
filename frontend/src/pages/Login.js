@@ -81,6 +81,7 @@ const Login = () => {
           error?.response?.data?.message ||
           "Something went wrong. Please try again.", // Error message from backend
       });
+      setLoading(false);
     }
   };
   return (

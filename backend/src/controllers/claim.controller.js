@@ -11,7 +11,6 @@ import asyncHandler from "../utils/asyncHandler.js";
 export const submitClaim = asyncHandler(async (req, res) => {
   const { name, email, claimAmount, description, document } = req.body;
 
-  
   if (!name || name.trim() === "") {
     return res.status(400).json({ message: "Patient name is required." });
   }
@@ -23,13 +22,12 @@ export const submitClaim = asyncHandler(async (req, res) => {
   }
 
   try {
-    
     const claim = await Claim.create({
       name,
       email,
       claimAmount,
       description,
-      documentUrl: document, 
+      documentUrl: document,
       ownerId: req.user._id,
     });
 
@@ -44,41 +42,10 @@ export const submitClaim = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export const getAllClaims = async (req, res) => {
   const { status, startDate, endDate, minAmount, maxAmount } = req.query;
 
   try {
-    
     const query = {};
 
     if (status) query.status = status;
@@ -89,10 +56,9 @@ export const getAllClaims = async (req, res) => {
     if (minAmount) query.claimAmount.$gte = Number(minAmount);
     if (maxAmount) query.claimAmount.$lte = Number(maxAmount);
 
-    
     const claims = await Claim.find(query)
       .populate("insurerId", "name email")
-      .sort({ updatedAt: -1 }); 
+      .sort({ updatedAt: -1 });
 
     return res.status(200).json({ claims });
   } catch (error) {
@@ -142,7 +108,6 @@ export const updateClaim = async (req, res) => {
       return res.status(404).json({ message: "Claim not found." });
     }
 
-    
     if (status) claim.status = status;
     if (approvedAmount !== undefined) claim.approvedAmount = approvedAmount;
     if (insurerComments) claim.insurerComments = insurerComments;
@@ -168,7 +133,6 @@ export const updateClaim = async (req, res) => {
  */
 export const getPatientClaims = async (req, res) => {
   try {
-    
     const user = await User.findById(req.user._id);
 
     if (!user) {
@@ -177,23 +141,20 @@ export const getPatientClaims = async (req, res) => {
       });
     }
 
-    
     const { status, startDate, endDate, minAmount, maxAmount } = req.query;
 
-    
-    const query = { ownerId: req.user._id }; 
+    const query = { ownerId: req.user._id };
 
-    if (status) query.status = status; 
+    if (status) query.status = status;
 
-    if (startDate || endDate) query.submissionDate = {}; 
-    if (startDate) query.submissionDate.$gte = new Date(startDate); 
-    if (endDate) query.submissionDate.$lte = new Date(endDate); 
+    if (startDate || endDate) query.submissionDate = {};
+    if (startDate) query.submissionDate.$gte = new Date(startDate);
+    if (endDate) query.submissionDate.$lte = new Date(endDate);
 
-    if (minAmount || maxAmount) query.claimAmount = {}; 
-    if (minAmount) query.claimAmount.$gte = Number(minAmount); 
-    if (maxAmount) query.claimAmount.$lte = Number(maxAmount); 
+    if (minAmount || maxAmount) query.claimAmount = {};
+    if (minAmount) query.claimAmount.$gte = Number(minAmount);
+    if (maxAmount) query.claimAmount.$lte = Number(maxAmount);
 
-    
     const claims = await Claim.find(query)
       .populate("insurerId", "name email")
       .sort({ updatedAt: -1 });
@@ -215,9 +176,8 @@ export const getPatientClaims = async (req, res) => {
  */
 export const deleteDocument = async (req, res, next) => {
   try {
-    const { publicId } = req.body; 
+    const { publicId } = req.body;
 
-    
     if (!publicId) {
       return res.status(400).json({
         success: false,
@@ -225,7 +185,6 @@ export const deleteDocument = async (req, res, next) => {
       });
     }
 
-    
     const response = await deleteFromCloudinary(publicId);
 
     if (response?.result === "ok") {
@@ -235,7 +194,6 @@ export const deleteDocument = async (req, res, next) => {
       });
     }
 
-    
     return res.status(500).json({
       success: false,
       message: "Failed to delete the document",
@@ -247,8 +205,9 @@ export const deleteDocument = async (req, res, next) => {
 };
 
 export const healthCheck = (req, res) => {
+  console.log("first");
   res.status(200).json({
     success: true,
-    message: "Your server is healthy",
+    message: "The server is healthy",
   });
 };

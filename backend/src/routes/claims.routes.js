@@ -14,6 +14,13 @@ import { protect, authorize } from "../middlewares/auth.middleware.js";
 const router = express.Router();
 
 /**
+ * @desc Health check
+ * @route GET /api/claims/health
+ * @access Public
+ */
+router.get("/health", healthCheck);
+
+/**
  * @desc Submit a new claim
  * @route POST /api/claims
  * @access Private (Patient Only)
@@ -48,8 +55,11 @@ router.get("/:claimId", protect, getClaimById);
  */
 router.put("/:claimId", protect, authorize("insurer"), updateClaim);
 
-router.delete("/", deleteDocument);
-
-router.get("/health", healthCheck);
+/**
+ * @desc Delete a document
+ * @route DELETE /api/claims
+ * @access Private
+ */
+router.delete("/", protect, deleteDocument);
 
 export default router;
