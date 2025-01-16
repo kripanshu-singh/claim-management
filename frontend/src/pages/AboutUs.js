@@ -739,7 +739,6 @@ const AboutUs = () => {
                 and React hooks/libraries. Eager to contribute, learn, and gain
                 practical experience through an internship opportunity.
               </p>
-              {/* <a href="javascript:void(0)">Get Started</a> */}
             </ContentWrapper>
           </ColumnRight>
         </Row>
