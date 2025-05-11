@@ -4,6 +4,16 @@ import axios from "axios";
 const claimApi = {
   communicator: claimCommunicator,
 
+  // !Get Health
+  getHealth() {
+    return this.communicator
+      .get(`/users/health`)
+      .then((response) => response)
+      .catch((error) => {
+        throw error;
+      });
+  },
+
   // !Register User
   registerUser(payload) {
     return this.communicator
@@ -57,7 +67,9 @@ const claimApi = {
     return this.communicator.delete(`/claim`, { data: { publicId: id } });
   },
   uploadDocument(file, cloudName) {
-    return axios.post(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, file).then((response) => response.data);
+    return axios
+      .post(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, file)
+      .then((response) => response.data);
   },
 };
 

@@ -191,3 +191,15 @@ export const refreshAccessToken = async (req, res) => {
     return res.status(401).json({ message: "Invalid refresh token." });
   }
 };
+
+/**
+ * @desc Get Health
+ * @route GET /api/users/health
+ */
+export const getHealth = async (req, res) => {
+  try {
+    return res.status(200).json({ message: "Working fine." });
+  } catch (error) {
+    return res.status(401).json({ message: "Something is wrong." });
+  }
+};

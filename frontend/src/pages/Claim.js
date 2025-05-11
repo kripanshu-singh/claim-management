@@ -9,8 +9,8 @@ const StyledContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc( 100dvh - 134px);
-  .ant-upload-wrapper{
+  height: calc(100dvh - 134px);
+  .ant-upload-wrapper {
     align-self: center;
   }
 `;
@@ -21,23 +21,23 @@ const StyledCard = styled.div`
   padding: 20px;
   height: calc(100% - 82px);
   width: 70%;
- .ant-card-head{
-  border-bottom: 1px solid #acacac;
-  padding-bottom: 20px;
- }
- .ant-card-body{
-  display: flex;
-  justify-content: space-around;
-  flex-direction: column;
-  height: calc(100% - 55px);
-  overflow: auto;
- }
- .claim-form{
+  .ant-card-head {
+    border-bottom: 1px solid #acacac;
+    padding-bottom: 20px;
+  }
+  .ant-card-body {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    height: calc(100% - 55px);
+    overflow: auto;
+  }
+  .claim-form {
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
- }
+  }
 `;
 
 const Claim = () => {
@@ -66,7 +66,7 @@ const Claim = () => {
       email,
       claimAmount,
       description,
-      document
+      document,
     };
 
     try {
@@ -113,31 +113,32 @@ const Claim = () => {
             form={form}
             style={{ marginLeft: "-250px" }}
           >
-
             <Form.Item
               label="Username"
               name="username"
               rules={[
                 {
                   required: true,
-                  message: 'Please input your username!',
+                  message: "Please input your username!",
                 },
               ]}
             >
-              <Input placeholder="Name" id="error"
+              <Input
+                placeholder="Name"
+                id="error"
                 onChange={(e) => setName(e.target.value)}
                 value={name}
               />
             </Form.Item>
 
             <Form.Item
-              name={['user', 'email']}
+              name={["user", "email"]}
               label="Email"
               rules={[
                 {
-                  type: 'email',
+                  type: "email",
                   required: true,
-                  message: 'Please input your email!',
+                  message: "Please input your email!",
                 },
               ]}
             >
@@ -150,13 +151,13 @@ const Claim = () => {
             </Form.Item>
 
             <Form.Item
-              name={['claimAmount']}
+              name={["claimAmount"]}
               label="Claim Amount"
               rules={[
                 {
-                  type: 'number',
+                  type: "number",
                   required: true,
-                  message: 'Please input your Claim Amount!',
+                  message: "Please input your Claim Amount!",
                 },
               ]}
             >
@@ -171,9 +172,11 @@ const Claim = () => {
             </Form.Item>
 
             <Form.Item
-              name={['user', 'introduction']}
+              name={["user", "introduction"]}
               label="Description"
-              rules={[{ required: true, message: 'Please input your description!', }]}
+              rules={[
+                { required: true, message: "Please input your description!" },
+              ]}
             >
               <Input.TextArea
                 rows={4}
@@ -186,10 +189,11 @@ const Claim = () => {
             <Form.Item
               name="document"
               label="Upload"
-              rules={[{
-                required: true,
-                message: 'Please upload relevant document!',
-              },
+              rules={[
+                {
+                  required: true,
+                  message: "Please upload relevant document!",
+                },
               ]}
               valuePropName="document"
             >
@@ -205,7 +209,7 @@ const Claim = () => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                marginLeft: "15%"
+                marginLeft: "15%",
               }}
             >
               <Button
@@ -217,7 +221,6 @@ const Claim = () => {
                 Submit Claim
               </Button>
             </Form.Item>
-
           </Form>
         </div>
       </StyledCard>

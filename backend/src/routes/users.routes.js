@@ -5,10 +5,17 @@ import {
   logoutUser,
   getUserProfile,
   refreshAccessToken,
+  getHealth,
 } from "../controllers/user.controller.js";
 import { protect } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
+
+/**
+ * @route GET /api/users/health
+ * @desc Get Health
+ */
+router.get("/health", getHealth);
 
 /**
  * @route POST /api/users/register
