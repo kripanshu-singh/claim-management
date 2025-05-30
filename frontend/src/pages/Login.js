@@ -16,7 +16,9 @@ const MainContainer = styled.div`
   justify-content: center;
   align-items: center;
   // Adjusted height to make space for the test credentials card below or beside
-  height: calc(-134px + 100vh); /* Slightly reduce height to fit more content or adjust as needed */
+  height: calc(
+    -134px + 100vh
+  ); /* Slightly reduce height to fit more content or adjust as needed */
   background-color: #f0f2f5;
   font-family: "Poppins", sans-serif;
   flex-wrap: wrap; /* Allow wrapping on smaller screens */
@@ -121,7 +123,8 @@ const CredentialLabel = styled.span`
 `;
 
 const CredentialValue = styled.span`
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; /* Monospaced font for credentials */
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+    monospace; /* Monospaced font for credentials */
   background-color: #e8e8e8;
   padding: 3px 8px;
   border-radius: 3px;
@@ -189,19 +192,20 @@ const Login = () => {
 
   // Function to copy text to clipboard
   const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text)
+    navigator.clipboard
+      .writeText(text)
       .then(() => {
         api.success({
           message: "Copied to Clipboard",
           description: `"${text}" copied successfully!`,
-          duration: 1.5
+          duration: 1.5,
         });
       })
       .catch((err) => {
         api.error({
           message: "Copy Failed",
           description: "Could not copy text. Please try manually.",
-          duration: 2
+          duration: 2,
         });
         console.error("Failed to copy: ", err);
       });
@@ -216,14 +220,100 @@ const Login = () => {
     api.info({
       message: "Credentials Filled",
       description: `Login form populated with ${role} credentials.`,
-      duration: 2
+      duration: 2,
     });
   };
 
   return (
     <>
       <MainContainer>
-        {contextHolder} {/* Place context holder at the top level */}
+        {contextHolder}
+        {/* NEW: Test Credentials Display Card */}
+        <TestCredentialsCard>
+          <Alert
+            style={{ padding: "16px" }}
+            message="For Testing Purpose Only"
+            description="Use these credentials to test different user roles in the application."
+            type="info"
+            showIcon
+          />
+          <CredentialBox>
+            <RoleTag color="blue">👤 Patient Portal</RoleTag>
+            <CredentialItem>
+              <CredentialLabel>Email:</CredentialLabel>
+              <div>
+                <CredentialValue>
+                  {testCredentials.patient.email}
+                </CredentialValue>
+                <CopyButton
+                  icon={<CopyOutlined />}
+                  size="small"
+                  onClick={() => copyToClipboard(testCredentials.patient.email)}
+                />
+              </div>
+            </CredentialItem>
+            <CredentialItem>
+              <CredentialLabel>Password:</CredentialLabel>
+              <div>
+                <CredentialValue>
+                  {testCredentials.patient.password}
+                </CredentialValue>
+                <CopyButton
+                  icon={<CopyOutlined />}
+                  size="small"
+                  onClick={() =>
+                    copyToClipboard(testCredentials.patient.password)
+                  }
+                />
+              </div>
+            </CredentialItem>
+            <QuickFillButton
+              type="dashed"
+              icon={<EyeOutlined />}
+              onClick={() => fillCredentials("patient")}
+            >
+              Quick Fill Patient Login
+            </QuickFillButton>
+          </CredentialBox>
+          <CredentialBox>
+            <RoleTag color="green">🏥 Insurer Portal</RoleTag>
+            <CredentialItem>
+              <CredentialLabel>Email:</CredentialLabel>
+              <div>
+                <CredentialValue>
+                  {testCredentials.insurer.email}
+                </CredentialValue>
+                <CopyButton
+                  icon={<CopyOutlined />}
+                  size="small"
+                  onClick={() => copyToClipboard(testCredentials.insurer.email)}
+                />
+              </div>
+            </CredentialItem>
+            <CredentialItem>
+              <CredentialLabel>Password:</CredentialLabel>
+              <div>
+                <CredentialValue>
+                  {testCredentials.insurer.password}
+                </CredentialValue>
+                <CopyButton
+                  icon={<CopyOutlined />}
+                  size="small"
+                  onClick={() =>
+                    copyToClipboard(testCredentials.insurer.password)
+                  }
+                />
+              </div>
+            </CredentialItem>
+            <QuickFillButton
+              type="dashed"
+              icon={<EyeOutlined />}
+              onClick={() => fillCredentials("insurer")}
+            >
+              Quick Fill Insurer Login
+            </QuickFillButton>
+          </CredentialBox>
+        </TestCredentialsCard>
         <CardContainer>
           <div className="formAndImage">
             <div className="">
@@ -284,81 +374,6 @@ const Login = () => {
             </ImageContainer>
           </div>
         </CardContainer>
-
-        {/* NEW: Test Credentials Display Card */}
-        <TestCredentialsCard>
-          <Alert
-          style={{padding:"16px"}}
-            message="For Testing Purpose Only"
-            description="Use these credentials to test different user roles in the application."
-            type="info"
-            showIcon
-          />
-          <CredentialBox>
-            <RoleTag color="blue">👤 Patient Portal</RoleTag>
-            <CredentialItem>
-              <CredentialLabel>Email:</CredentialLabel>
-              <div>
-                <CredentialValue>{testCredentials.patient.email}</CredentialValue>
-                <CopyButton
-                  icon={<CopyOutlined />}
-                  size="small"
-                  onClick={() => copyToClipboard(testCredentials.patient.email)}
-                />
-              </div>
-            </CredentialItem>
-            <CredentialItem>
-              <CredentialLabel>Password:</CredentialLabel>
-              <div>
-                <CredentialValue>{testCredentials.patient.password}</CredentialValue>
-                <CopyButton
-                  icon={<CopyOutlined />}
-                  size="small"
-                  onClick={() => copyToClipboard(testCredentials.patient.password)}
-                />
-              </div>
-            </CredentialItem>
-            <QuickFillButton
-              type="dashed"
-              icon={<EyeOutlined />}
-              onClick={() => fillCredentials('patient')}
-            >
-              Quick Fill Patient Login
-            </QuickFillButton>
-          </CredentialBox>
-          <CredentialBox>
-            <RoleTag color="green">🏥 Insurer Portal</RoleTag>
-            <CredentialItem>
-              <CredentialLabel>Email:</CredentialLabel>
-              <div>
-                <CredentialValue>{testCredentials.insurer.email}</CredentialValue>
-                <CopyButton
-                  icon={<CopyOutlined />}
-                  size="small"
-                  onClick={() => copyToClipboard(testCredentials.insurer.email)}
-                />
-              </div>
-            </CredentialItem>
-            <CredentialItem>
-              <CredentialLabel>Password:</CredentialLabel>
-              <div>
-                <CredentialValue>{testCredentials.insurer.password}</CredentialValue>
-                <CopyButton
-                  icon={<CopyOutlined />}
-                  size="small"
-                  onClick={() => copyToClipboard(testCredentials.insurer.password)}
-                />
-              </div>
-            </CredentialItem>
-            <QuickFillButton
-              type="dashed"
-              icon={<EyeOutlined />}
-              onClick={() => fillCredentials('insurer')}
-            >
-              Quick Fill Insurer Login
-            </QuickFillButton>
-          </CredentialBox>
-        </TestCredentialsCard>
       </MainContainer>
     </>
   );

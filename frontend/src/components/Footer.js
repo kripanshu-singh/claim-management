@@ -102,7 +102,7 @@ const Footer = () => {
               <a
                 target="_blank"
                 rel="noreferrer"
-                href="https://www.linkedin.com/in/kripanshu-singh/"
+                href="https://www.linkedin.com/in/singh-kripanshu/"
               >
                 Linkedin
               </a>
@@ -120,7 +120,7 @@ const Footer = () => {
               <a
                 target="_blank"
                 rel="noreferrer"
-                href="mailto:kripanshusingh160305@gmail.com"
+                href="mailto:kripanshusingh16@gmail.com"
               >
                 Email
               </a>
